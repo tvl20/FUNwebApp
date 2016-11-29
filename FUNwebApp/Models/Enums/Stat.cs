@@ -11,7 +11,7 @@ namespace KillerFUNwebApp1._0.Models.Enums
         Heatlh,
         MaxHealth,
         Attack,
-        AttackPointsPerMove,
+        AttackPointsPerAttack,
         AttackPointsRegen,
         Defence,
         MovePointsPerMove

@@ -126,6 +126,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BossEnemy.cs" />
+    <Compile Include="Models\DAL\IPlayerRepo.cs" />
+    <Compile Include="Models\DAL\IWeaponRepo.cs" />
+    <Compile Include="Models\DAL\MSSQLplayerRepo.cs" />
+    <Compile Include="Models\DAL\MSSQLweaponRepo.cs" />
+    <Compile Include="Models\DAL\PlayerBizLog.cs" />
+    <Compile Include="Models\DAL\WeaponBizLog.cs" />
     <Compile Include="Models\Enemy.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\Enums\Class.cs" />

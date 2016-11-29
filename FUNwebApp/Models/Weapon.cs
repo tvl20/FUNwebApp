@@ -8,9 +8,15 @@ namespace KillerFUNwebApp1._0.Models
 {
     public class Weapon
     {
+        public int ID { get; set; }
         public int WeaponDamage { get; set; }
         public int WeaponCrit { get; set; }
         public WeaponType WeaponType { get; set; }
         public string WeaponName { get; set; }
+
+        public Weapon(int id, int weaponDamage, int WeaponCrit, WeaponType weaponType, string weaponName)
+        {
+            
+        }
     }
 }
