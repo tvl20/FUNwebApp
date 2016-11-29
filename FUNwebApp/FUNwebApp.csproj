@@ -125,6 +125,24 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BossEnemy.cs" />
+    <Compile Include="Models\Enemy.cs" />
+    <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\Enums\Class.cs" />
+    <Compile Include="Models\Enums\Direction.cs" />
+    <Compile Include="Models\Enums\Soort.cs" />
+    <Compile Include="Models\Enums\Stat.cs" />
+    <Compile Include="Models\Enums\ThingType.cs" />
+    <Compile Include="Models\Enums\WeaponType.cs" />
+    <Compile Include="Models\HumanEnemy.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\MonsterEnemy.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Thing.cs" />
+    <Compile Include="Models\Trap.cs" />
+    <Compile Include="Models\Weapon.cs" />
+    <Compile Include="Models\WeaponOnGround.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -143,7 +161,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
