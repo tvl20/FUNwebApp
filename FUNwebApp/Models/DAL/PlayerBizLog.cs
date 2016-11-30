@@ -51,7 +51,10 @@ namespace KillerAppFUN2.DAL
 
         public void addPlayer(Player p)
         {
-            repo.addPlayer(p);
+            if (p.Name.Length > 4 && p.Name.Length < 31)
+            {
+                repo.addPlayer(p);
+            }
         }
 
         public void updatePlayer(Player p)

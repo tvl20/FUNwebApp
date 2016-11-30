@@ -5,12 +5,15 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Web;
+using FUNwebApp.Models.Enums;
+using KillerFUNwebApp1._0.Models;
+using KillerFUNwebApp1._0.Models.Enums;
 
 namespace FUNwebApp.Models.DAL
 {
     public class MSSQLroomRepo : IRoomRepo
     {
-        private readonly string conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Teun\Source\Repos\FUN2killerapp\KillerAppFUN2\KillerAppFUN2\RPGdata.mdf;Integrated Security=True";
+        private readonly string conn = @"Data Source=DESKTOP-9K8HK1F;Initial Catalog=FUNwebKillerApp;Integrated Security=True";
 
         public string getRoomLayout(int roomID)
         {
@@ -56,14 +59,15 @@ namespace FUNwebApp.Models.DAL
             return spawnPoint;
         }
 
-        public List<Point> GetEnemySpawnPoints(int roomID) //WIP
+        public List<Enemy> GetEnemies(int roomID) //WIP
         {
-            List<Point> enemySpawnPoints = new List<Point>();
-            /*
+            List<Enemy> enemies = new List<Enemy>();
+            
+            //get the boss enemies
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT SpawnX, SpawnY FROM EnemyRooms WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, AttackPointsRegen, SpecialAttackCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -72,16 +76,37 @@ namespace FUNwebApp.Models.DAL
                         {
                             int x = reader.GetInt32(0);
                             int y = reader.GetInt32(1);
-                            spawnPoint = new Point(x, y);
+                            DamageSource enemyDamageSource = DamageSource.Physical; //default damage type
+                            int DMGspecialATK = reader.GetInt32(3);
+                            int Attack = reader.GetInt32(4);
+                            int ATKpointsPerAttack = reader.GetInt32(5);
+                            int ATKpointsRegen = reader.GetInt32(6);
+                            int SpecialATKcooldown = reader.GetInt32(7);
+
+                            string damageSource = reader.GetString(2);
+                            switch (damageSource)
+                            {
+                                case "Cold":
+                                    enemyDamageSource = DamageSource.Cold;
+                                    break;
+                                case "Fire":
+                                    enemyDamageSource = DamageSource.Fire;
+                                    break;
+                                case "Physical":
+                                    enemyDamageSource = DamageSource.Physical;
+                                    break;
+                            }
+
+                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, ATKpointsRegen);
                         }
                     }
                 }
             }
-            */
-            return enemySpawnPoints;
+            
+            return enemies;
         }
 
-        public List<Point> GetObjectSpawnPoints(int roomID)
+        public List<Thing> GetObjects(int roomID)
         {
             throw new NotImplementedException();
         }

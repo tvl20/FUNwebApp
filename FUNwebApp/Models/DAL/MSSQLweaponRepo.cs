@@ -12,7 +12,7 @@ namespace KillerAppFUN2.DAL
 {
     class MSSQLweaponRepo : IWeaponRepo
     {
-        private readonly string conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Teun\Source\Repos\FUN2killerapp\KillerAppFUN2\KillerAppFUN2\RPGdata.mdf;Integrated Security=True";
+        private readonly string conn = @"Data Source=DESKTOP-9K8HK1F;Initial Catalog=FUNwebKillerApp;Integrated Security=True";
 
         public List<Weapon> getAllWeapons()
         {

@@ -139,6 +139,7 @@
     <Compile Include="Models\Enemy.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\Enums\Class.cs" />
+    <Compile Include="Models\Enums\DamageSource.cs" />
     <Compile Include="Models\Enums\Direction.cs" />
     <Compile Include="Models\Enums\Soort.cs" />
     <Compile Include="Models\Enums\Stat.cs" />

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KillerFUNwebApp1._0.Models;
 
 namespace FUNwebApp.Models.DAL
 {
@@ -11,7 +12,7 @@ namespace FUNwebApp.Models.DAL
     {
         string getRoomLayout(int roomID);
         Point GetPlayerSpawnPoint(int roomID);
-        List<Point> GetEnemySpawnPoints(int roomID);
-        List<Point> GetObjectSpawnPoints(int roomID);
+        List<Enemy> GetEnemies(int roomID);
+        List<Thing> GetObjects(int roomID);
     }
 }

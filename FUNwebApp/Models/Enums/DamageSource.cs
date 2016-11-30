@@ -5,11 +5,10 @@ using System.Web;
 
 namespace FUNwebApp.Models.Enums
 {
-    public enum Direction
+    public enum DamageSource
     {
-        North,
-        South,
-        East,
-        West
+        Cold,
+        Fire,
+        Physical
     }
 }

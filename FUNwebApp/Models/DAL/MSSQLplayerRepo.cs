@@ -13,14 +13,14 @@ namespace KillerAppFUN2.DAL
 {
     class MSSQLplayerRepo : IPlayerRepo
     {
-        private readonly string conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Teun\Source\Repos\FUN2killerapp\KillerAppFUN2\KillerAppFUN2\RPGdata.mdf;Integrated Security=True";
+        private readonly string conn = @"Data Source=DESKTOP-9K8HK1F;Initial Catalog=FUNwebKillerApp;Integrated Security=True";
 
         public void addPlayer(Player p)
         {
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("EXECUTE newPlayer", connection))
+                using (SqlCommand cmd = new SqlCommand("newPlayer", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("@playerName", SqlDbType.VarChar).Value = p.Name;
