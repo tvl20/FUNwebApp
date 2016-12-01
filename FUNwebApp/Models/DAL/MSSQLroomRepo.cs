@@ -63,11 +63,50 @@ namespace FUNwebApp.Models.DAL
         {
             List<Enemy> enemies = new List<Enemy>();
             
-            //get the boss enemies
+            
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
+
+                //get the boss enemies
                 using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, AttackPointsRegen, SpecialAttackCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
+                {
+                    cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int x = reader.GetInt32(0);
+                            int y = reader.GetInt32(1);
+                            DamageSource enemyDamageSource = DamageSource.Physical; //default damage type
+                            int DMGspecialATK = reader.GetInt32(3);
+                            int Attack = reader.GetInt32(4);
+                            int ATKpointsPerAttack = reader.GetInt32(5);
+                            int ATKpointsRegen = reader.GetInt32(6);
+                            int SpecialATKcooldown = reader.GetInt32(7);
+
+                            string damageSource = reader.GetString(2);
+                            switch (damageSource)
+                            {
+                                case "Cold":
+                                    enemyDamageSource = DamageSource.Cold;
+                                    break;
+                                case "Fire":
+                                    enemyDamageSource = DamageSource.Fire;
+                                    break;
+                                case "Physical":
+                                    enemyDamageSource = DamageSource.Physical;
+                                    break;
+                            }
+
+                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, ATKpointsRegen);
+                            enemies.Add(boss);
+                        }
+                    }
+                }
+
+                //select all the HumanEnemies WIP
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
