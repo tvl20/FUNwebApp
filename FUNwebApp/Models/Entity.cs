@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using FUNwebApp.Models.Enums;
 using KillerFUNwebApp1._0.Models.Enums;
 
 namespace KillerFUNwebApp1._0.Models

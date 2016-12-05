@@ -16,6 +16,7 @@ namespace KillerFUNwebApp1._0.Models
         public string Name { get; set; }
         public Class Class { get; set; }
         public int MaxHealth { get; set; }
+        public int XP { get; set; }
 
         private PlayerBizLog playerRepoBizLog = new PlayerBizLog(new MSSQLplayerRepo());
         private WeaponBizLog weaponRepoBizLog = new WeaponBizLog(new MSSQLweaponRepo());
@@ -37,8 +38,9 @@ namespace KillerFUNwebApp1._0.Models
             }
         }
 
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, Weapon weapon)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, int xp, Weapon weapon)
         {
+            XP = xp;
             Name = name;
             Class = playerClass;
             Level = levelStat;
@@ -53,8 +55,9 @@ namespace KillerFUNwebApp1._0.Models
             CurrentRoomID = currentRoomID;
             CurrentWeapon = weapon;
         }
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, int weaponID)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, int xp, int weaponID)
         {
+            XP = xp;
             Name = name;
             Class = playerClass;
             Level = levelStat;
@@ -69,8 +72,9 @@ namespace KillerFUNwebApp1._0.Models
             CurrentRoomID = currentRoomID;
             CurrentWeapon = weaponRepoBizLog.getWeaponByID(weaponID);
         }
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, string weaponName)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, int xp, string weaponName)
         {
+            XP = xp;
             Name = name;
             Class = playerClass;
             Level = levelStat;

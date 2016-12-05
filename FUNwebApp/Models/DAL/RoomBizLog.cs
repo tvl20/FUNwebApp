@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Web;
+using KillerFUNwebApp1._0.Models;
 
 namespace FUNwebApp.Models.DAL
 {
@@ -24,14 +25,14 @@ namespace FUNwebApp.Models.DAL
             return repo.GetPlayerSpawnPoint(roomID);
         }
 
-        public List<Point> GetEnemySpawnPoints(int roomID)
+        public List<Enemy> GetEnemies(int roomID)
         {
-            return repo.GetEnemySpawnPoints(roomID);
+            return repo.GetEnemies(roomID);
         }
 
-        public List<Point> GetObjectSpawnPoints(int roomID)
+        public List<Thing> GetObjects(int roomID)
         {
-            return repo.GetObjectSpawnPoints(roomID);
+            return repo.GetObjects(roomID);
         }
     }
 }

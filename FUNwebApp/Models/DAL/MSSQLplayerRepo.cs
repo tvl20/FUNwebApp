@@ -50,7 +50,7 @@ namespace KillerAppFUN2.DAL
             {
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT PlayerName, Class, CurrentRoomID, X, Y, Lvl, MaxHP, HP, Attack, AttackPointsPerAttack, AttackPointsRegen, " +
-                                                       "MovePointsPerMove, Defence, WeaponID, WeaponDMG, WeaponCRT, WeaponType, WeaponName FROM Players " +
+                                                       "MovePointsPerMove, Defence, WeaponID, WeaponDMG, WeaponCRT, WeaponType, WeaponName, XP FROM Players " +
                                                        "INNER JOIN Weapons ON Players.CurrentWeapon = Weapons.WeaponID"))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -75,6 +75,7 @@ namespace KillerAppFUN2.DAL
                             int weaponCRT = reader.GetInt32(15);
                             WeaponType weaponType = WeaponType.MonsterSlayer;   //default weapontype is 'MonsterSlayer'
                             string weaponName = reader.GetString(17);
+                            int xp = reader.GetInt32(18);
 
 
                             string Class = reader.GetString(1);
@@ -107,7 +108,7 @@ namespace KillerAppFUN2.DAL
 
 
                             Weapon w = new Weapon(weaponID, weaponDMG, weaponCRT, weaponType, weaponName);
-                            Player p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x,y), currentRoom, w);
+                            Player p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x,y), currentRoom, xp, w);
                             playerList.Add(p);
                         }
                     }
@@ -123,7 +124,7 @@ namespace KillerAppFUN2.DAL
             {
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT Class, CurrentRoomID, X, Y, Lvl, MaxHP, HP, Attack, AttackPointsPerAttack, AttackPointsRegen, " +
-                                                       "MovePointsPerMove, Defence, WeaponID, WeaponDMG, WeaponCRT, WeaponType, WeaponName FROM Players " +
+                                                       "MovePointsPerMove, Defence, WeaponID, WeaponDMG, WeaponCRT, WeaponType, WeaponName, XP FROM Players " +
                                                        "INNER JOIN Weapons ON Players.CurrentWeapon = Weapons.WeaponID WHERE PlayerName = @playerName", connection))
                 {
                     cmd.Parameters.Add("@playerName", SqlDbType.VarChar).Value = playerName;
@@ -148,6 +149,7 @@ namespace KillerAppFUN2.DAL
                             int weaponCRT = reader.GetInt32(14);
                             WeaponType weaponType = WeaponType.MonsterSlayer;   //default weapontype is 'MonsterSlayer'
                             string weaponName = reader.GetString(16);
+                            int xp = reader.GetInt32(17);
 
 
                             string Class = reader.GetString(1);
@@ -180,7 +182,7 @@ namespace KillerAppFUN2.DAL
 
 
                             Weapon w = new Weapon(weaponID, weaponDMG, weaponCRT, weaponType, weaponName);
-                            p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x, y), currentRoom, w);
+                            p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x, y), currentRoom, xp, w);
                         }
                     }
                 }
@@ -193,11 +195,12 @@ namespace KillerAppFUN2.DAL
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("UPDATE Players SET CurrentWeapon=@weaponID, Lvl=@playerLvl, X=@playerX, Y=@playerY, MaxHP=@playerMaxHP, HP=@playerHP, Defence=@playerDefence WHERE PlayerName=@playerName", connection))
+                using (SqlCommand cmd = new SqlCommand("UPDATE Players SET CurrentWeapon=@weaponID, Lvl=@playerLvl, XP=@xp, X=@playerX, Y=@playerY, MaxHP=@playerMaxHP, HP=@playerHP, Defence=@playerDefence WHERE PlayerName=@playerName", connection))
                 {
                     cmd.Parameters.Add("@playerName", SqlDbType.Int).Value = p.Name;
                     cmd.Parameters.Add("@weaponID", SqlDbType.Int).Value = p.CurrentWeapon.ID;
                     cmd.Parameters.Add("@playerLvl", SqlDbType.Int).Value = p.Level;
+                    cmd.Parameters.Add("@xp", SqlDbType.Int).Value = p.XP;
                     cmd.Parameters.Add("@playerX", SqlDbType.Int).Value = p.X;
                     cmd.Parameters.Add("@playerY", SqlDbType.Int).Value = p.Y;
                     cmd.Parameters.Add("@playerMaxHP", SqlDbType.Int).Value = p.MaxHealth;
