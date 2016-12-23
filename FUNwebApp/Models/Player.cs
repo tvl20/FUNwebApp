@@ -24,6 +24,7 @@ namespace KillerFUNwebApp1._0.Models
         public void levelUp(Stat _Stat)
         {
             Level++;
+            XP = 0;
             switch (_Stat)
             {
                 case Stat.MaxHealth:
@@ -36,6 +37,7 @@ namespace KillerFUNwebApp1._0.Models
                     Defence++;
                     break;
             }
+            playerRepoBizLog.updatePlayer(this);
         }
 
         public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, Point locaionPoint, int currentRoomID, int xp, Weapon weapon)
@@ -93,6 +95,11 @@ namespace KillerFUNwebApp1._0.Models
         public Player()
         {
             //this is so that it is possible to make a player object with 'custom' properties
+        }
+
+        public override string ToString()
+        {
+            return "Name: " + Name + ", Level: " + Level.ToString() + ", Class: " + Class.ToString();
         }
     }
 }

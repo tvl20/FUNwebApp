@@ -1,0 +1,78 @@
+﻿@model KillerFUNwebApp1._0.Models.Player
+
+@{
+    ViewBag.Title = "Player";
+}
+
+<h1>Player statistics</h1>
+
+<table class="table table-striped">
+    <tr>
+        <th>Stat</th>
+        <th>Level</th>
+        @if (Model.XP == (Model.Level * (Model.Level + 1)))
+        {
+            <th>LevelUp</th>
+        }
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>Class</td>
+        <td>@Model.Class</td>
+    </tr>
+    <tr>
+        <td>Level</td>
+        <td>@Model.Level</td>
+    </tr>
+    <tr>
+        <td>XP</td>
+        <td>@(Model.XP) / @(Model.Level * (Model.Level + 1))</td>
+    </tr>
+    <tr>
+        <td>Health</td>
+        <td>@Model.Health</td>
+    </tr>
+    <tr>
+        <td>Max health</td>
+        <td>@Model.MaxHealth</td>
+        @if (Model.XP == (Model.Level * (Model.Level + 1)))
+        {
+            <td>
+                <form method="post">
+                    <input type="submit" name="btnPress" value="Max_HP"/>
+                </form>
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>Attack</td>
+        <td>@Model.Attack</td>
+        @if (Model.XP == (Model.Level * (Model.Level + 1)))
+        {
+            <td>
+                <form method="post">
+                    <input type="submit" name="btnPress" value="Attack" />
+                </form>
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>Defence</td>
+        <td>@Model.Defence</td>
+        @if (Model.XP == (Model.Level * (Model.Level + 1)))
+        {
+            <td>
+                <form method="post">
+                    <input type="submit" name="btnPress" value="Defence" />
+                </form>
+            </td>
+        }
+    </tr>
+</table>
+
+<form method="post">
+    <input type="submit" name="btnPress" value="To the map"/>
+</form>

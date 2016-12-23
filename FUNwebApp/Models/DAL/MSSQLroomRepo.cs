@@ -23,6 +23,7 @@ namespace FUNwebApp.Models.DAL
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT RoomLayOut FROM Rooms WHERE RoomID = @roomID", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -44,6 +45,7 @@ namespace FUNwebApp.Models.DAL
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT PlayerSpawnX, PlayerSpawnY FROM Rooms WHERE RoomID = @roomID", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -71,6 +73,7 @@ namespace FUNwebApp.Models.DAL
                 //get the boss enemies
                 using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, AttackPointsRegen, SpecialAttackCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -108,6 +111,7 @@ namespace FUNwebApp.Models.DAL
                 //select all the HumanEnemies WIP
                 using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -148,6 +152,39 @@ namespace FUNwebApp.Models.DAL
         public List<Thing> GetObjects(int roomID)
         {
             throw new NotImplementedException();
+        }
+
+        public Room GetRoom(int roomID)
+        {
+            Room returnRoom = new Room();
+            returnRoom.Enemies = this.GetEnemies(roomID);
+            returnRoom.RoomLayout = this.getRoomLayout(roomID);
+            returnRoom.Things = this.GetObjects(roomID);
+            returnRoom.RoomID = roomID;
+
+            int LocationID = 0; //default location is 0
+            int NextRoomID = roomID; //default next room is the current room
+            using (SqlConnection connection = new SqlConnection(conn))
+            {
+                connection.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT RoomLayOut, NextRoomID FROM Rooms WHERE RoomID = @roomID", connection))
+                {
+                    cmd.Connection = connection;
+                    cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LocationID = reader.GetInt32(0);
+                            returnRoom.NextRoomID = reader.GetInt32(1);
+                        }
+                    }
+                }
+            }
+            returnRoom.LocaionID = LocationID;
+            returnRoom.NextRoomID = NextRoomID;
+            
+            return returnRoom;
         }
     }
 }

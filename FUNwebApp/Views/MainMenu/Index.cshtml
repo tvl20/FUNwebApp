@@ -1,0 +1,19 @@
+﻿@using KillerFUNwebApp1._0.Models
+@{
+    ViewBag.Title = "Characters";
+}
+
+<h2>Index</h2>
+
+<form method="post">
+    <ul style="list-style: none; ">
+        @foreach (Player player in ViewBag.players)
+        {
+            <li>
+                <input type="radio" name="selected_character" value=@player.Name />
+                <label id="A + @player.Name">@player.ToString()</label>
+            </li>
+        }
+    </ul>
+    <input type="submit" name="confirm_selection" value="Select" />
+</form>

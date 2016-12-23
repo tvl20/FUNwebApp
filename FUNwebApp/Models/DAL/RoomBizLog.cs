@@ -34,5 +34,10 @@ namespace FUNwebApp.Models.DAL
         {
             return repo.GetObjects(roomID);
         }
+
+        public Room GetRoom(int roomID)
+        {
+            return repo.GetRoom(roomID);
+        }
     }
 }

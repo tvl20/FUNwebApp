@@ -14,5 +14,6 @@ namespace FUNwebApp.Models.DAL
         Point GetPlayerSpawnPoint(int roomID);
         List<Enemy> GetEnemies(int roomID);
         List<Thing> GetObjects(int roomID);
+        Room GetRoom(int roomID);
     }
 }

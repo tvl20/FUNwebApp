@@ -18,5 +18,10 @@ namespace KillerFUNwebApp1._0.Models
         {
             
         }
+
+        public override string ToString()
+        {
+            return WeaponName;
+        }
     }
 }

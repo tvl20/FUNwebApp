@@ -22,6 +22,7 @@ namespace KillerAppFUN2.DAL
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT * FROM Weapons", connection))
                 {
+                    cmd.Connection = connection;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -58,6 +59,7 @@ namespace KillerAppFUN2.DAL
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT WeaponID, WeaponDMG, WeaponCRT, WeaponType FROM Weapons WHERE WeaponName=@weaponName", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@weaponName", SqlDbType.VarChar).Value = name;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -100,6 +102,7 @@ namespace KillerAppFUN2.DAL
                 connection.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT WeaponName, WeaponDMG, WeaponCRT, WeaponType FROM Weapons WHERE WeaponID=@weaponID", connection))
                 {
+                    cmd.Connection = connection;
                     cmd.Parameters.Add("@weaponID", SqlDbType.VarChar).Value = id;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {

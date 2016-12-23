@@ -29,6 +29,11 @@ namespace KillerAppFUN2.DAL
             return names;
         }
 
+        public List<Player> GetAllPlayers()
+        {
+            return repo.getAllPlayers();
+        }
+
         public bool playerNameTaken(string playerName)
         {
             List<string> takenNames = getPlayerNames();
