@@ -61,6 +61,12 @@
                     case 39: //Right
                         defaults.player.x += defaults.tileSize;
                         break;
+                    case 37: //Left
+                        defaults.player.x -= defaults.tileSize;
+                        break;
+                    case 40: //Down
+                        defaults.player.y += defaults.tileSize;
+                        break;
 
                     default:
                 }
@@ -74,4 +80,8 @@
     var game = new Spel({
         tileSize: 40
     });
+
+    var sound = document.getElementById("background_music");
+    sound.loop = true;
+    sound.play();
 });
