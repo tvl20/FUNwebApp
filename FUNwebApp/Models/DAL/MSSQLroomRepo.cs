@@ -71,7 +71,7 @@ namespace FUNwebApp.Models.DAL
                 connection.Open();
 
                 //get the boss enemies
-                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, AttackPointsRegen, SpecialAttackCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, SpecialATKCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -85,8 +85,8 @@ namespace FUNwebApp.Models.DAL
                             int DMGspecialATK = reader.GetInt32(3);
                             int Attack = reader.GetInt32(4);
                             int ATKpointsPerAttack = reader.GetInt32(5);
-                            int ATKpointsRegen = reader.GetInt32(6);
-                            int SpecialATKcooldown = reader.GetInt32(7);
+                            double ATKpointsRegen = Math.Round((Convert.ToDouble(ATKpointsPerAttack) / 5) + 1);
+                            int SpecialATKcooldown = reader.GetInt32(6);
 
                             string damageSource = reader.GetString(2);
                             switch (damageSource)
@@ -102,14 +102,14 @@ namespace FUNwebApp.Models.DAL
                                     break;
                             }
 
-                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, ATKpointsRegen);
+                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, Convert.ToInt32(ATKpointsRegen));
                             enemies.Add(boss);
                         }
                     }
                 }
 
                 //select all the HumanEnemies WIP
-                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen FROM BossEnemies WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen FROM HumanEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -119,14 +119,16 @@ namespace FUNwebApp.Models.DAL
                         {
                             int x = reader.GetInt32(0);
                             int y = reader.GetInt32(1);
+                            int critChance = reader.GetInt32(2);
                             DamageSource enemyDamageSource = DamageSource.Physical; //default damage type
-                            int DMGspecialATK = reader.GetInt32(3);
                             int Attack = reader.GetInt32(4);
                             int ATKpointsPerAttack = reader.GetInt32(5);
                             int ATKpointsRegen = reader.GetInt32(6);
-                            int SpecialATKcooldown = reader.GetInt32(7);
 
-                            string damageSource = reader.GetString(2);
+
+                            /*
+                             * For later expansion.
+                            string damageSource = reader.GetString(7);
                             switch (damageSource)
                             {
                                 case "Cold":
@@ -139,8 +141,35 @@ namespace FUNwebApp.Models.DAL
                                     enemyDamageSource = DamageSource.Physical;
                                     break;
                             }
+                            */
 
-                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, ATKpointsRegen);
+                            HumanEnemy Human = new HumanEnemy(x, y, enemyDamageSource, Attack, ATKpointsPerAttack,
+                                ATKpointsRegen, critChance);
+                            enemies.Add(Human);
+                        }
+                    }
+                }
+
+                //get all the monsterEnemies
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, TrueDMG, Attack, AttackPointsPerAttack, AttackPointsRegen FROM MonsterEnemies WHERE RoomID = @roomID", connection))
+                {
+                    cmd.Connection = connection;
+                    cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int x = reader.GetInt32(0);
+                            int y = reader.GetInt32(1);
+                            int TrueDMG = reader.GetInt32(2);
+                            int Attack = reader.GetInt32(4);
+                            int ATKpointsPerAttack = reader.GetInt32(5);
+                            int ATKpointsRegen = reader.GetInt32(6);
+
+
+
+                            MonsterEnemy Monster = new MonsterEnemy(x, y, Attack, ATKpointsPerAttack, ATKpointsRegen, TrueDMG);
+                            enemies.Add(Monster);
                         }
                     }
                 }
@@ -151,7 +180,42 @@ namespace FUNwebApp.Models.DAL
 
         public List<Thing> GetObjects(int roomID)
         {
-            throw new NotImplementedException();
+            List<Thing> returnList = new List<Thing>();
+            using (SqlConnection connection = new SqlConnection(conn))
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SELECT Soort, WeaponID, X, Y, DMG FROM Dingen WHERE RoomID = @roomID", connection))
+                {
+                    cmd.Connection = connection;
+                    cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int x = reader.GetInt32(2);
+                            int y = reader.GetInt32(3);
+                            ThingType thingType = ThingType.Trap; //default
+                            int dmg = reader.GetInt32(4);
+                            int weaponID = reader.GetInt32(1);
+
+                            string type = reader.GetString(0);
+                            switch (type)
+                            {
+                                case "Trap":
+                                    thingType = ThingType.Trap;
+                                    returnList.Add(new Trap(dmg));
+                                    break;
+                                case "Fire":
+                                    thingType = ThingType.WeaponOnGround;
+                                    returnList.Add(new WeaponOnGround(weaponID));
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            return returnList;
         }
 
         public Room GetRoom(int roomID)
@@ -162,12 +226,12 @@ namespace FUNwebApp.Models.DAL
             returnRoom.Things = this.GetObjects(roomID);
             returnRoom.RoomID = roomID;
 
-            int LocationID = 0; //default location is 0
-            int NextRoomID = roomID; //default next room is the current room
+            returnRoom.LocationID = 0; //default location is 0
+            returnRoom.NextRoomID = roomID; //default next room is the current room
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT RoomLayOut, NextRoomID FROM Rooms WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT LocationID, NextRoomID FROM Rooms WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -175,14 +239,15 @@ namespace FUNwebApp.Models.DAL
                     {
                         while (reader.Read())
                         {
-                            LocationID = reader.GetInt32(0);
-                            returnRoom.NextRoomID = reader.GetInt32(1);
+                            returnRoom.LocationID = reader.GetInt32(0);
+                            if (!reader.IsDBNull(1))
+                            {
+                                returnRoom.NextRoomID = reader.GetInt32(1);
+                            }
                         }
                     }
                 }
             }
-            returnRoom.LocaionID = LocationID;
-            returnRoom.NextRoomID = NextRoomID;
             
             return returnRoom;
         }

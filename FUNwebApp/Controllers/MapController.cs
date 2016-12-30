@@ -12,7 +12,7 @@ namespace FUNwebApp.Controllers
 {
     public class MapController : Controller
     {
-        private PlayerBizLog repo = new PlayerBizLog(new MSSQLplayerRepo());
+        private PlayerBizLog playerRepo = new PlayerBizLog(new MSSQLplayerRepo());
         private RoomBizLog roomRepo = new RoomBizLog(new MSSQLroomRepo());
 
         // GET: Map
@@ -63,6 +63,11 @@ namespace FUNwebApp.Controllers
         public ActionResult Game()
         {
             return View();
+        }
+
+        public IEnumerable<Enemy> Enemies()
+        {
+            return roomRepo.GetEnemies((int)Session["current_room"]);
         }
     }
 }

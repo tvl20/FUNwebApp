@@ -9,6 +9,6 @@ namespace KillerFUNwebApp1._0.Models
     public abstract class Thing
     {
         public int ID { get; set; }
-        public Soort Soort { get; set; }
+        public ThingType Type { get; set; }
     }
 }

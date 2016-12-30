@@ -13,6 +13,15 @@
 
         defaults = $.extend(true, defaults, config);
 
+        //sets the coordinates for (and gets) the enemies
+        $.getJSON("Map/Enemies", function(data) {
+            for (var i = 0; i < data.length -1; i++) {
+                console.log(data[i]);
+            }
+        });
+
+
+        //set the coordinates for the player
         defaults.player.x = Math.round(canvas.width / 2 / defaults.tileSize) * defaults.tileSize;
         defaults.player.y = Math.round(canvas.height / 2 / defaults.tileSize) * defaults.tileSize;
 
@@ -36,10 +45,10 @@
             }
         }
 
-        function drawDot() {
+        function drawPlayer() {
             ctx.beginPath();
             ctx.arc(defaults.player.x - defaults.tileSize / 2, defaults.player.y - defaults.tileSize / 2, defaults.tileSize / 2, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = "green";
             ctx.fill();
         }
 
@@ -47,7 +56,7 @@
             if (tileA.complete && tileB.complete) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawTileA();
-                drawDot();
+                drawPlayer();
             }
         }
 
@@ -80,6 +89,11 @@
     var game = new Spel({
         tileSize: 40
     });
+
+    var enemyTimer = setInterval(myTimer, 10);
+    function myTimer() {
+        
+    }
 
     var sound = document.getElementById("background_music");
     sound.loop = true;
