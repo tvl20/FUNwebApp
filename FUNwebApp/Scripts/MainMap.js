@@ -5,25 +5,27 @@
 
         var defaults = {
             tileSize: 50,
-            player: {
-                x: 0,
-                y: 0
-            }
+            player: {},
+            currentRoom: {}
         };
 
         defaults = $.extend(true, defaults, config);
 
-        //sets the coordinates for (and gets) the enemies
-        $.getJSON("/Map/Enemies", function (data) {
-            for (var i = 0; i < data.length; i++) {
-                console.log(data[i].Level);
-            }
+        //gets the current room
+        $.get("/Map/GetRoom", function (data) {
+            console.log(data);
+            defaults.currentRoom = data;
         });
 
-
-        //set the coordinates for the player
-        defaults.player.x = Math.round(canvas.width / 2 / defaults.tileSize) * defaults.tileSize;
-        defaults.player.y = Math.round(canvas.height / 2 / defaults.tileSize) * defaults.tileSize;
+        //gets the current player
+        $.get("/Map/GetPlayer", function (data) {
+            console.log(data);
+            defaults.player = data;
+            defaults.player.X = defaults.player.X * defaults.tileSize;
+            defaults.player.Y = defaults.player.Y * defaults.tileSize;
+            render();
+        });
+        console.log(defaults);
 
         var tileA = new Image();
         tileA.src = "/Graphics/Tile.png";
@@ -47,7 +49,7 @@
 
         function drawPlayer() {
             ctx.beginPath();
-            ctx.arc(defaults.player.x - defaults.tileSize / 2, defaults.player.y - defaults.tileSize / 2, defaults.tileSize / 2, 0, 2 * Math.PI, false);
+            ctx.arc(defaults.player.X - defaults.tileSize / 2, defaults.player.Y - defaults.tileSize / 2, defaults.tileSize / 2, 0, 2 * Math.PI, false);
             ctx.fillStyle = "green";
             ctx.fill();
         }
@@ -65,16 +67,16 @@
                 //Speler positie aanpassen
                 switch (e.keyCode) {
                     case 38: //Up
-                        defaults.player.y -= defaults.tileSize;
+                        defaults.player.Y -= defaults.tileSize;
                         break;
                     case 39: //Right
-                        defaults.player.x += defaults.tileSize;
+                        defaults.player.X += defaults.tileSize;
                         break;
                     case 37: //Left
-                        defaults.player.x -= defaults.tileSize;
+                        defaults.player.X -= defaults.tileSize;
                         break;
                     case 40: //Down
-                        defaults.player.y += defaults.tileSize;
+                        defaults.player.Y += defaults.tileSize;
                         break;
 
                     default:

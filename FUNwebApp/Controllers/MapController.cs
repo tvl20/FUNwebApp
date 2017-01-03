@@ -65,11 +65,16 @@ namespace FUNwebApp.Controllers
             return View();
         }
 
-        public ActionResult Enemies()
+        public ActionResult GetRoom()
         {
-            var room = (Room) Session["current_room"];
-            List<Enemy>enemies = roomRepo.GetEnemies(room.RoomID);
-            return Json(enemies, JsonRequestBehavior.AllowGet);
+            var room = (Room)Session["current_room"];
+            return Json(room, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetPlayer()
+        {
+            var player = (Player)Session["selected_character"];
+            return Json(player, JsonRequestBehavior.AllowGet);
         }
     }
 }

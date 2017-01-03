@@ -204,11 +204,11 @@ namespace FUNwebApp.Models.DAL
                     {
                         while (reader.Read())
                         {
+                            int weaponID = reader.GetInt32(1);
                             int x = reader.GetInt32(2);
                             int y = reader.GetInt32(3);
                             ThingType thingType = ThingType.Trap; //default
                             int dmg = reader.GetInt32(4);
-                            int weaponID = reader.GetInt32(1);
 
                             string type = reader.GetString(0);
                             switch (type)

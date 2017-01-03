@@ -111,7 +111,7 @@ namespace KillerAppFUN2.DAL
 
 
                             Weapon w = new Weapon(weaponID, weaponDMG, weaponCRT, weaponType, weaponName);
-                            Player p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x,y), currentRoom, xp, w);
+                            Player p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, x, y, currentRoom, xp, w);
                             playerList.Add(p);
                         }
                     }
@@ -186,7 +186,7 @@ namespace KillerAppFUN2.DAL
 
 
                             Weapon w = new Weapon(weaponID, weaponDMG, weaponCRT, weaponType, weaponName);
-                            p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, new Point(x, y), currentRoom, xp, w);
+                            p = new Player(playerName, playerClass, lvl, hp, maxHP, attack, attackPointsPerAttack, attackPointsRegen, defence, movePointsPerMove, x, y, currentRoom, xp, w);
                         }
                     }
                 }
