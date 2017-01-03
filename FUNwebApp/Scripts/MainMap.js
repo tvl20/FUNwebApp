@@ -14,9 +14,9 @@
         defaults = $.extend(true, defaults, config);
 
         //sets the coordinates for (and gets) the enemies
-        $.getJSON("Map/Enemies", function(data) {
-            for (var i = 0; i < data.length -1; i++) {
-                console.log(data[i]);
+        $.getJSON("/Map/Enemies", function (data) {
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i].Level);
             }
         });
 

@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Audio\Odesza - Above The Middle.mp3" />
+    <Content Include="Audio\Theme.wav" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
@@ -130,6 +131,7 @@
     <Content Include="Graphics\Tile.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

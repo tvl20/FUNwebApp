@@ -12,7 +12,7 @@ namespace KillerFUNwebApp1._0.Models
         public DamageSource SpecialAttackDamageSource { get; set; }
         public int SpecialAttackCooldown { get; set; }
 
-        public BossEnemy(int x, int y, int specialATKdmg, DamageSource dmgType, int specialATKcooldown, int attack, int attackPointsPerATK, int attackPointsRegen)
+        public BossEnemy(int x, int y, int specialATKdmg, DamageSource dmgType, int specialATKcooldown, int attack, int attackPointsPerATK, int attackPointsRegen, int Defence, int MovePointsPerMove, int Health, int Level)
         {
             X = x;
             Y = y;
@@ -22,6 +22,10 @@ namespace KillerFUNwebApp1._0.Models
             Attack = attack;
             AttackPointsPerAttack = attackPointsPerATK;
             AttackPointsRegen = attackPointsRegen;
+            this.Defence = Defence;
+            this.MovePointsPerMove = MovePointsPerMove;
+            this.Health = Health;
+            this.Level = Level;
         }
     }
 }

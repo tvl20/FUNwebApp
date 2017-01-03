@@ -65,9 +65,11 @@ namespace FUNwebApp.Controllers
             return View();
         }
 
-        public IEnumerable<Enemy> Enemies()
+        public ActionResult Enemies()
         {
-            return roomRepo.GetEnemies((int)Session["current_room"]);
+            var room = (Room) Session["current_room"];
+            List<Enemy>enemies = roomRepo.GetEnemies(room.RoomID);
+            return Json(enemies, JsonRequestBehavior.AllowGet);
         }
     }
 }

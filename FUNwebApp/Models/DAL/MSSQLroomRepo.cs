@@ -71,7 +71,7 @@ namespace FUNwebApp.Models.DAL
                 connection.Open();
 
                 //get the boss enemies
-                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, SpecialATKCooldown FROM BossEnemies WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, SoortSpecialATK, DMGspecialATK, Attack, AttackPointsPerAttack, SpecialATKCooldown, MovePointsPerMove, Defence, Health, Levels FROM BossEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -87,6 +87,10 @@ namespace FUNwebApp.Models.DAL
                             int ATKpointsPerAttack = reader.GetInt32(5);
                             double ATKpointsRegen = Math.Round((Convert.ToDouble(ATKpointsPerAttack) / 5) + 1);
                             int SpecialATKcooldown = reader.GetInt32(6);
+                            int MovePointsPerMove = reader.GetInt32(7);
+                            int Defence = reader.GetInt32(8);
+                            int Health = reader.GetInt32(9);
+                            int Levels = reader.GetInt32(10);
 
                             string damageSource = reader.GetString(2);
                             switch (damageSource)
@@ -102,14 +106,14 @@ namespace FUNwebApp.Models.DAL
                                     break;
                             }
 
-                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, Convert.ToInt32(ATKpointsRegen));
+                            BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, Convert.ToInt32(ATKpointsRegen), Defence, MovePointsPerMove, Health, Levels);
                             enemies.Add(boss);
                         }
                     }
                 }
 
                 //select all the HumanEnemies WIP
-                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen FROM HumanEnemies WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, CritChance, Attack, AttackPointsPerAttack, AttackPointsRegen, MovePointsPerMove, Defence, Health, Levels FROM HumanEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -124,6 +128,10 @@ namespace FUNwebApp.Models.DAL
                             int Attack = reader.GetInt32(4);
                             int ATKpointsPerAttack = reader.GetInt32(5);
                             int ATKpointsRegen = reader.GetInt32(6);
+                            int MovePointsPerMove = reader.GetInt32(7);
+                            int Defence = reader.GetInt32(8);
+                            int Health = reader.GetInt32(9);
+                            int Levels = reader.GetInt32(10);
 
 
                             /*
@@ -143,15 +151,14 @@ namespace FUNwebApp.Models.DAL
                             }
                             */
 
-                            HumanEnemy Human = new HumanEnemy(x, y, enemyDamageSource, Attack, ATKpointsPerAttack,
-                                ATKpointsRegen, critChance);
+                            HumanEnemy Human = new HumanEnemy(x, y, enemyDamageSource, Attack, ATKpointsPerAttack, ATKpointsRegen, critChance, Defence, MovePointsPerMove, Health, Levels);
                             enemies.Add(Human);
                         }
                     }
                 }
 
                 //get all the monsterEnemies
-                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, TrueDMG, Attack, AttackPointsPerAttack, AttackPointsRegen FROM MonsterEnemies WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT X, Y, TrueDMG, Attack, AttackPointsPerAttack, AttackPointsRegen, MovePointsPerMove, Defence, Health, Levels FROM MonsterEnemies WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -162,13 +169,17 @@ namespace FUNwebApp.Models.DAL
                             int x = reader.GetInt32(0);
                             int y = reader.GetInt32(1);
                             int TrueDMG = reader.GetInt32(2);
-                            int Attack = reader.GetInt32(4);
-                            int ATKpointsPerAttack = reader.GetInt32(5);
-                            int ATKpointsRegen = reader.GetInt32(6);
+                            int Attack = reader.GetInt32(3);
+                            int ATKpointsPerAttack = reader.GetInt32(4);
+                            int ATKpointsRegen = reader.GetInt32(5);
+                            int MovePointsPerMove = reader.GetInt32(6);
+                            int Defence = reader.GetInt32(7);
+                            int Health = reader.GetInt32(8);
+                            int Levels = reader.GetInt32(9);
 
 
 
-                            MonsterEnemy Monster = new MonsterEnemy(x, y, Attack, ATKpointsPerAttack, ATKpointsRegen, TrueDMG);
+                            MonsterEnemy Monster = new MonsterEnemy(x, y, Attack, ATKpointsPerAttack, ATKpointsRegen, TrueDMG, Defence, MovePointsPerMove, Health, Levels);
                             enemies.Add(Monster);
                         }
                     }
