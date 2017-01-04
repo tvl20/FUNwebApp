@@ -25,15 +25,40 @@ namespace FUNwebApp.Models.DAL
             return repo.GetPlayerSpawnPoint(roomID);
         }
 
-        public List<Enemy> GetEnemies(int roomID)
+        public List<HumanEnemy> GetHumanEnemies(int roomID)
         {
-            return repo.GetEnemies(roomID);
+            return repo.GetHumanEnemies(roomID);
         }
 
-        public List<Thing> GetObjects(int roomID)
+        public List<MonsterEnemy> GetMonsterEnemies(int roomID)
         {
-            return repo.GetObjects(roomID);
+            return repo.GetMonsterEnemies(roomID);
         }
+
+        public List<BossEnemy> GetBossEnemies(int roomID)
+        {
+            return repo.GetBossEnemies(roomID);
+        }
+
+        //public List<Enemy> GetEnemies(int roomID)
+        //{
+        //    return repo.GetEnemies(roomID);
+        //}
+
+        public List<Trap> GetTraps(int roomID)
+        {
+            return repo.GetTraps(roomID);
+        }
+
+        public List<WeaponOnGround> GetWeaponOnGrounds(int roomID)
+        {
+            return repo.GetWeaponOnGrounds(roomID);
+        }
+
+        //public List<Thing> GetObjects(int roomID)
+        //{
+        //    return repo.GetObjects(roomID);
+        //}
 
         public Room GetRoom(int roomID)
         {
