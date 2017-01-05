@@ -10,5 +10,7 @@ namespace KillerFUNwebApp1._0.Models
     {
         public int ID { get; set; }
         public ThingType Type { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

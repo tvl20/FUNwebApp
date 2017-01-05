@@ -10,10 +10,12 @@ namespace KillerFUNwebApp1._0.Models
     {
         public int WeaponID { get; set; }
 
-        public WeaponOnGround(int weaponID)
+        public WeaponOnGround(int weaponID, int x, int y)
         {
             WeaponID = weaponID;
             Type = ThingType.WeaponOnGround;
+            X = x;
+            Y = y;
         }
     }
 }

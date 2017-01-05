@@ -9,5 +9,7 @@ namespace KillerFUNwebApp1._0.Models
     public abstract class Enemy : Entity
     {
         public Soort Soort { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

@@ -6,9 +6,27 @@
 
 <h2>Game</h2>
 
-<div class="game_map">
-    <canvas id="A" width="800" height="500"></canvas>
+<div class="row">
+    <div class="col-lg-11">
+        <div class="game_map">
+            <canvas id="A" width="800" height="500"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-1">
+        <label>Playername: </label>
+        <br/>
+        <label id="playername">---</label>
+        <br/>
+        <br/>
+        <label>HP: </label>
+        <br/>
+        <label id="hp">---</label>
+        <label> / </label>
+        <label id="max_hp">---</label>
+        <br/>
+    </div>
 </div>
+
 <audio src="/Audio/Theme.wav" id="background_music"></audio>
 
 @section scripts 

@@ -223,7 +223,7 @@ namespace FUNwebApp.Models.DAL
                             int y = reader.GetInt32(2);
                             int dmg = reader.GetInt32(3);
 
-                            traps.Add(new Trap(dmg));
+                            traps.Add(new Trap(dmg, x, y));
                         }
                     }
                 }
@@ -250,7 +250,7 @@ namespace FUNwebApp.Models.DAL
                             int y = reader.GetInt32(2);
                             int weaponID = reader.GetInt32(3);
 
-                            weaponOnGrounds.Add(new WeaponOnGround(weaponID));
+                            weaponOnGrounds.Add(new WeaponOnGround(weaponID, x, y));
                         }
                     }
                 }
@@ -276,7 +276,7 @@ namespace FUNwebApp.Models.DAL
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT LocationID, NextRoomID FROM Rooms WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT LocationID, NextRoomID, PlayerSpawnX, PlayerSpawnY FROM Rooms WHERE RoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -289,6 +289,8 @@ namespace FUNwebApp.Models.DAL
                             {
                                 returnRoom.NextRoomID = reader.GetInt32(1);
                             }
+                            returnRoom.PlayerSpawnX = reader.GetInt32(2);
+                            returnRoom.PlayerSpawnY = reader.GetInt32(3);
                         }
                     }
                 }

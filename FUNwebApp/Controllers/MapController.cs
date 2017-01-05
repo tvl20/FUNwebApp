@@ -21,7 +21,8 @@ namespace FUNwebApp.Controllers
         {
             if (Session["selected_character"] != null)
             {
-                return View(Session["selected_character"] as Player);
+                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
+                return View(p);
             }
             return new HttpNotFoundResult();
         }

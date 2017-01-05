@@ -5,25 +5,57 @@
 
         var defaults = {
             tileSize: 50,
+            roomWidth: 800,
+            roomHeight: 500,
             player: {
+                Name: "temp",
+                Health: 1,
+                MaxHealth: 1,
                 AttackPoints: 0,
+                AttackPointsPerAttack: 0,
+                AttackPointsRegen: 0,
                 MovePoints: 0,
-                MovePointsPerMove: 1
+                MovePointsPerMove: 1,
+                Attack: 1,
+                CurrentWeapon: {
+                    WeaponDamage: 1
+                }
             },
             currentRoom: {
+                PlayerSpawnX: 1,
+                PlayerSpawnY: 5,
                 HumanEnemies: [
                     {
-                        MovePoints: 0
+                        MovePoints: 0,
+                        AttackPoints: 0,
+                        Defence: 0
                     }
                 ],
                 MonsterEnemies: [
                     {
-                        MovePoints: 0
+                        MovePoints: 0,
+                        AttackPoints: 0,
+                        Defence: 0
                     }
                 ],
                 BossEnemies: [
                     {
-                        MovePoints: 0
+                        MovePoints: 0,
+                        AttackPoints: 0,
+                        Defence: 0
+                    }
+                ],
+                WeaponOnGrounds: [
+                    {
+                        X: 0,
+                        Y: 0
+                    }
+                ],
+                Traps: [
+                    {
+                        Damage: 0,
+                        X: 0,
+                        Y: 0
                     }
                 ]
             }
@@ -56,8 +88,11 @@
             //console.log(data);
             defaults.player = $.extend(true, defaults.player, data);
             //defaults.player = data;
-            defaults.player.X = defaults.player.X * defaults.tileSize;
-            defaults.player.Y = defaults.player.Y * defaults.tileSize;
+            defaults.player.X = defaults.currentRoom.PlayerSpawnX * defaults.tileSize;
+            defaults.player.Y = defaults.currentRoom.PlayerSpawnY * defaults.tileSize;
+            $('#playername').val(defaults.player.Name);
+            $('#hp').val(defaults.player.Health);
+            $('#max_hp').val(defaults.player.MaxHealth);
             render();
         });
         console.log(defaults);
@@ -75,11 +110,17 @@
         tileB.onload = render;
 
         function drawTileA() {
-            for (var x = 0; x < 30; x++) {
-                for (var y = 0; y < 15; y++) {
+            for (var x = 0; x < Math.round(defaults.roomWidth/defaults.tileSize); x++) {
+                for (var y = 0; y < Math.round(defaults.roomHeight/defaults.tileSize); y++) {
                     ctx.drawImage(tileA, x * tileA.width, y * tileA.height);
                 }
             }
+        }
+
+        this.updateInfo = function() {
+            $('#playername').text(defaults.player.Name);
+            $('#hp').text(defaults.player.Health);
+            $('#max_hp').text(defaults.player.MaxHealth);
         }
 
         function drawPlayer() {
@@ -125,46 +166,210 @@
             }
 
             for (var i = 0; i < defaults.currentRoom.HumanEnemies.length; i++) {
-                if (defaults.currentRoom.HumanEnemies[i].MovePoints < defaults.currentRoom.HumanEnemies[i].MovePointsPerMove) {
+                if (defaults.currentRoom.HumanEnemies[i].MovePoints <
+                    defaults.currentRoom.HumanEnemies[i].MovePointsPerMove) {
                     defaults.currentRoom.HumanEnemies[i].MovePoints++;
                     console.log("enemy " + i + " move points:" + defaults.currentRoom.HumanEnemies[i].MovePoints);
                 }
             }
             for (var j = 0; j < defaults.currentRoom.MonsterEnemies.length; j++) {
-                if (defaults.currentRoom.MonsterEnemies[j].MovePoints < defaults.currentRoom.MonsterEnemies[j].MovePointsPerMove) {
+                if (defaults.currentRoom.MonsterEnemies[j].MovePoints <
+                    defaults.currentRoom.MonsterEnemies[j].MovePointsPerMove) {
                     defaults.currentRoom.MonsterEnemies[j].MovePoints++;
                     console.log("enemy " + j + " move points:" + defaults.currentRoom.MonsterEnemies[j].MovePoints);
                 }
             }
             for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
-                if (defaults.currentRoom.BossEnemies[k].MovePoints < defaults.currentRoom.BossEnemies[k].MovePointsPerMove) {
+                if (defaults.currentRoom.BossEnemies[k].MovePoints <
+                    defaults.currentRoom.BossEnemies[k].MovePointsPerMove) {
                     defaults.currentRoom.BossEnemies[k].MovePoints++;
                     console.log("enemy " + k + " move points:" + defaults.currentRoom.BossEnemies[k].MovePoints);
                 }
             }
         }
 
+        this.giveAttackPoints = function() {
+            if (defaults.player.AttackPoints < defaults.player.AttackPointsPerAttack) {
+                defaults.player.AttackPoints += defaults.player.AttackPointsRegen;
+            }
+
+            for (var i = 0; i < defaults.currentRoom.HumanEnemies.length; i++) {
+                if (defaults.currentRoom.HumanEnemies[i].AttackPoints <
+                    defaults.currentRoom.HumanEnemies[i].AttackPointsPerAttack) {
+                    defaults.currentRoom.HumanEnemies[i].AttackPoints += defaults.currentRoom.HumanEnemies[i].AttackPointsRegen;
+                    console.log("enemy " + i + " attack points:" + defaults.currentRoom.HumanEnemies[i].MovePoints);
+                }
+            }
+            for (var j = 0; j < defaults.currentRoom.MonsterEnemies.length; j++) {
+                if (defaults.currentRoom.MonsterEnemies[j].AttackPoints <
+                    defaults.currentRoom.MonsterEnemies[j].AttackPointsPerAttack) {
+                    defaults.currentRoom.MonsterEnemies[j].AttackPoints += defaults.currentRoom.MonsterEnemies[j].AttackPointsRegen;
+                    console.log("enemy " + j + " attack points:" + defaults.currentRoom.MonsterEnemies[j].MovePoints);
+                }
+            }
+            for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
+                if (defaults.currentRoom.BossEnemies[k].AttackPoints <
+                    defaults.currentRoom.BossEnemies[k].AttackPointsPerAttack) {
+                    defaults.currentRoom.BossEnemies[k].AttackPoints += defaults.currentRoom.BossEnemies[k].AttackPointsRegen;
+                    console.log("enemy " + k + " attack points:" + defaults.currentRoom.BossEnemies[k].MovePoints);
+                }
+            }
+        }
+
+        //enemy movement
+        this.actionEnemy = function () {
+            var pX = defaults.player.X;
+            var pY = defaults.player.Y;
+            var eX;
+            var eY;
+            for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
+                //above, right, under, left
+                eX = defaults.currentRoom.MonsterEnemies[i].X;
+                eY = defaults.currentRoom.MonsterEnemies[i].Y;
+                if (
+                        ((pX === eX) && (pY === (eY - defaults.tileSize))) || //player is above the enemy
+                        ((pX === (eX + defaults.tileSize)) && (pY === eY)) || //player is right of the enemy
+                        ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
+                        ((pX === (eX - defaults.tileSize)) && (pY === eY))
+                    )
+                {
+                    //attack player
+                } else {
+                    //move enemy
+                }
+            }
+        }
+
+        //attacking an enemy
+        function attackEnemy(enemyX, enemyY) {
+            if (defaults.player.AttackPoints >= defaults.player.AttackPointsPerAttack) {
+                defaults.player.AttackPoints -= defaults.player.AttackPointsPerAttack;
+                for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
+                    if ((defaults.currentRoom.MonsterEnemies[i].X === enemyX) &&
+                        (defaults.currentRoom.MonsterEnemies[i].Y === enemyY)) {
+                        defaults.currentRoom.MonsterEnemies[i].Health -=
+                        ((defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) -
+                            defaults.currentRoom.MonsterEnemies[i].Defence);
+                        console.log(defaults);
+                    }
+                }
+                for (var j = 0; j < defaults.currentRoom.HumanEnemies.length; j++) {
+                    if ((defaults.currentRoom.HumanEnemies[j].X === enemyX) &&
+                        (defaults.currentRoom.HumanEnemies[j].Y === enemyY)) {
+                        defaults.currentRoom.HumanEnemies[j].Health -=
+                        ((defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) -
+                            defaults.currentRoom.HumanEnemies[j].Defence);
+                    }
+                }
+                for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
+                    if ((defaults.currentRoom.BossEnemies[k].X === enemyX) &&
+                        (defaults.currentRoom.BossEnemies[k].Y === enemyY)) {
+                        defaults.currentRoom.BossEnemies[k].Health -=
+                        ((defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) -
+                            defaults.currentRoom.BossEnemies[k].Defence);
+                    }
+                }
+            }
+        }
+
+        //check what is on the position {enemy, weapon, trap, empty}
+        function getOccupation(x, y) {
+            var completed = false;
+            for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
+                if ((defaults.currentRoom.MonsterEnemies[i].X === x) &&
+                    (defaults.currentRoom.MonsterEnemies[i].Y === y)) {
+                    return "enemy";
+                }
+            }
+            for (var j = 0; j < defaults.currentRoom.HumanEnemies.length; j++) {
+                if ((defaults.currentRoom.HumanEnemies[j].X === x) &&
+                    (defaults.currentRoom.HumanEnemies[j].Y === y)) {
+                    return "enemy";
+                }
+            }
+            for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
+                if ((defaults.currentRoom.BossEnemies[k].X === x) &&
+                    (defaults.currentRoom.BossEnemies[k].Y === y)) {
+                    return "enemy";
+                }
+            }
+
+            for (var l = 0; l < defaults.currentRoom.WeaponOnGrounds; l++) {
+                if ((defaults.currentRoom.WeaponOnGrounds[l].X === x) &&
+                    (defaults.currentRoom.WeaponOnGrounds[l].Y === y)) {
+                    return "weapon";
+                }
+            }
+
+            for (var m = 0; m < defaults.currentRoom.Traps; m++) {
+                if ((defaults.currentRoom.Traps[m].X === x) &&
+                    (defaults.currentRoom.Traps[m].Y === y)) {
+                    return "trap";
+                }
+            }
+
+            return "empty";
+        }
+
+
+        //Speler positie aanpassen
         $(window).keyup(function (e) {
             if (defaults.player.MovePoints >= defaults.player.MovePointsPerMove) {
-                //Speler positie aanpassen
+                var pos;
+                var occ;
                 switch (e.keyCode) {
                 case 38: //Up
-                    defaults.player.Y -= defaults.tileSize;
+                    pos = defaults.player.Y - defaults.tileSize;
+                    occ = getOccupation(defaults.player.X, pos);
+                    if (pos > 0) {
+                        if ((occ === "trap") || (occ === "empty")) {
+                            defaults.player.Y -= defaults.tileSize;
+                            defaults.player.MovePoints = 0;
+                        } else {
+                            attackEnemy(defaults.player.X, pos);
+                        }
+                    }
                     break;
                 case 39: //Right
-                    defaults.player.X += defaults.tileSize;
+                    pos = defaults.player.X + defaults.tileSize;
+                    occ = getOccupation(pos, defaults.player.Y);
+                    if (pos <= defaults.roomWidth) {
+                        if ((occ === "trap") || (occ === "empty")) {
+                            defaults.player.X += defaults.tileSize;
+                            defaults.player.MovePoints = 0;
+                        } else {
+                            attackEnemy(pos, defaults.player.Y);
+                        }
+                    }
                     break;
                 case 37: //Left
-                    defaults.player.X -= defaults.tileSize;
+                    pos = defaults.player.X - defaults.tileSize;
+                    occ = getOccupation(pos, defaults.player.Y);
+                    if (pos > 0) {
+                        if ((occ === "trap") || (occ === "empty")) {
+                            defaults.player.X -= defaults.tileSize;
+                            defaults.player.MovePoints = 0;
+                        } else {
+                            attackEnemy(pos, defaults.player.Y);
+                        }
+                    }
                     break;
                 case 40: //Down
-                    defaults.player.Y += defaults.tileSize;
+                    pos = defaults.player.Y + defaults.tileSize;
+                    occ = getOccupation(defaults.player.X, pos);
+                    if (pos <= defaults.roomHeight) {
+                        if ((occ === "trap") || (occ === "empty")) {
+                            defaults.player.Y += defaults.tileSize;
+                            defaults.player.MovePoints = 0;
+                        } else {
+                            attackEnemy(defaults.player.X, pos);
+                        }
+                    }
                     break;
                 }
 
                 //Spel opnieuw renderen
                 render();
-                defaults.player.MovePoints = 0;
             }
         });
 
@@ -172,12 +377,15 @@
     }
 
     var game = new Spel({
-        tileSize: 40
+        tileSize: 50
     });
 
     var timer = setInterval(myTimer, 250);
     function myTimer() {
         game.giveMovePoints();
+        game.giveAttackPoints();
+        game.actionEnemy();
+        game.updateInfo();
     }
 
     var sound = document.getElementById("background_music");

@@ -10,10 +10,12 @@ namespace KillerFUNwebApp1._0.Models
     {
         public int Damage { get; set; }
 
-        public Trap(int damage)
+        public Trap(int damage, int x, int y)
         {
             Damage = damage;
             Type = ThingType.Trap;
+            X = x;
+            Y = y;
         }
     }
 }

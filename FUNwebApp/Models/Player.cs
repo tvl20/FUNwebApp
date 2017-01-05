@@ -39,7 +39,7 @@ namespace KillerFUNwebApp1._0.Models
             playerRepoBizLog.updatePlayer(this);
         }
 
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int x, int y, int currentRoomID, int xp, Weapon weapon)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int currentRoomID, int xp, Weapon weapon)
         {
             XP = xp;
             Name = name;
@@ -52,12 +52,10 @@ namespace KillerFUNwebApp1._0.Models
             AttackPointsRegen = attackPointsRegenStat;
             Defence = defenceStat;
             MovePointsPerMove = movePointsPerMoveStat;
-            X = x;
-            Y = y;
             CurrentRoomID = currentRoomID;
             CurrentWeapon = weapon;
         }
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int x, int y, int currentRoomID, int xp, int weaponID)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int currentRoomID, int xp, int weaponID)
         {
             XP = xp;
             Name = name;
@@ -70,12 +68,10 @@ namespace KillerFUNwebApp1._0.Models
             AttackPointsRegen = attackPointsRegenStat;
             Defence = defenceStat;
             MovePointsPerMove = movePointsPerMoveStat;
-            X = x;
-            Y = y;
             CurrentRoomID = currentRoomID;
             CurrentWeapon = weaponRepoBizLog.getWeaponByID(weaponID);
         }
-        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int x, int y, int currentRoomID, int xp, string weaponName)
+        public Player(string name, Class playerClass, int levelStat, int healthStat, int maxHealthStat, int attackStat, int attackPointsPerAttackStat, int attackPointsRegenStat, int defenceStat, int movePointsPerMoveStat, int currentRoomID, int xp, string weaponName)
         {
             XP = xp;
             Name = name;
@@ -88,8 +84,6 @@ namespace KillerFUNwebApp1._0.Models
             AttackPointsRegen = attackPointsRegenStat;
             Defence = defenceStat;
             MovePointsPerMove = movePointsPerMoveStat;
-            X = x;
-            Y = y;
             CurrentRoomID = currentRoomID;
             CurrentWeapon = weaponRepoBizLog.getWeaponByName(weaponName);
         }
