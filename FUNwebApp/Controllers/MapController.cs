@@ -7,6 +7,7 @@ using FUNwebApp.Models.DAL;
 using KillerAppFUN2.DAL;
 using KillerFUNwebApp1._0.Models;
 using KillerFUNwebApp1._0.Models.Enums;
+using Newtonsoft.Json;
 
 namespace FUNwebApp.Controllers
 {
@@ -21,7 +22,7 @@ namespace FUNwebApp.Controllers
         {
             if (Session["selected_character"] != null)
             {
-                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
+                Player p = (Player)Session["selected_character"];
                 return View(p);
             }
             return new HttpNotFoundResult();
@@ -34,30 +35,8 @@ namespace FUNwebApp.Controllers
             {
                 Player currentPlayer = Session["selected_character"] as Player;
                 Session["current_room"] = roomRepo.GetRoom(currentPlayer.CurrentRoomID);
-
-
-                return Redirect("/Map/Game");
             }
-            else if (btnPress == "Max_HP")
-            {
-                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
-                p.levelUp(Stat.MaxHealth);
-                Session["selected_character"] = p;
-            }
-            else if (btnPress == "Attack")
-            {
-                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
-                p.levelUp(Stat.Attack);
-                Session["selected_character"] = p;
-            }
-            else if (btnPress == "Max_HP")
-            {
-                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
-                p.levelUp(Stat.Defence);
-                Session["selected_character"] = p;
-            }
-
-            return Redirect("/Map/Player");
+            return Redirect("/Map/Game");
         }
 
         [HttpGet]
@@ -76,6 +55,38 @@ namespace FUNwebApp.Controllers
         {
             var player = (Player)Session["selected_character"];
             return Json(player, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AddPlayerXP(int xp)
+        {
+            var player = (Player)Session["selected_character"];
+            player.XP += xp;
+            Session["selected_character"] = player;
+            return Json(player, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult LvlUp(string stat)
+        {
+            if (stat == "max_hp")
+            {
+                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
+                p.levelUp(Stat.MaxHealth);
+                Session["selected_character"] = p;
+            }
+            else if (stat == "attack")
+            {
+                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
+                p.levelUp(Stat.Attack);
+                Session["selected_character"] = p;
+            }
+            else if (stat == "defence")
+            {
+                KillerFUNwebApp1._0.Models.Player p = Session["selected_character"] as Player;
+                p.levelUp(Stat.Defence);
+                Session["selected_character"] = p;
+            }
+
+            return Redirect("/Map/Player");
         }
     }
 }

@@ -22,8 +22,8 @@ namespace KillerFUNwebApp1._0.Models
 
         public void levelUp(Stat _Stat)
         {
+            XP -= Level * (Level + 5); //the required amount of XP for the next level is calculated as follows (with lvl being the current level of the player): lvl * (lvl + 5)
             Level++;
-            XP = 0;
             switch (_Stat)
             {
                 case Stat.MaxHealth:

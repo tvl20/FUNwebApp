@@ -1,78 +1,84 @@
-﻿@model KillerFUNwebApp1._0.Models.Player
+﻿@using KillerFUNwebApp1._0.Models;
+@model Player
 
 @{
     ViewBag.Title = "Player";
 }
 
 <h1>Player statistics</h1>
-
-<table class="table table-striped">
-    <tr>
-        <th>Stat</th>
-        <th>Level</th>
-        @if (Model.XP == (Model.Level * (Model.Level + 1)))
-        {
-            <th>LevelUp</th>
-        }
-    </tr>
-    <tr>
-        <td>Name</td>
-        <td>@Model.Name</td>
-    </tr>
-    <tr>
-        <td>Class</td>
-        <td>@Model.Class</td>
-    </tr>
-    <tr>
-        <td>Level</td>
-        <td>@Model.Level</td>
-    </tr>
-    <tr>
-        <td>XP</td>
-        <td>@(Model.XP) / @(Model.Level * (Model.Level + 1))</td>
-    </tr>
-    <tr>
-        <td>Health</td>
-        <td>@Model.Health</td>
-    </tr>
-    <tr>
-        <td>Max health</td>
-        <td>@Model.MaxHealth</td>
-        @if (Model.XP == (Model.Level * (Model.Level + 1)))
-        {
-            <td>
-                <form method="post">
-                    <input type="submit" name="btnPress" value="Max_HP"/>
-                </form>
-            </td>
-        }
-    </tr>
-    <tr>
-        <td>Attack</td>
-        <td>@Model.Attack</td>
-        @if (Model.XP == (Model.Level * (Model.Level + 1)))
-        {
-            <td>
-                <form method="post">
-                    <input type="submit" name="btnPress" value="Attack" />
-                </form>
-            </td>
-        }
-    </tr>
-    <tr>
-        <td>Defence</td>
-        <td>@Model.Defence</td>
-        @if (Model.XP == (Model.Level * (Model.Level + 1)))
-        {
-            <td>
-                <form method="post">
-                    <input type="submit" name="btnPress" value="Defence" />
-                </form>
-            </td>
-        }
-    </tr>
-</table>
+<div class="table table-striped">
+    <div class="row">
+        <label class="col-lg-4"><b>Stat</b></label>
+        <label class="col-lg-4"><b>Level / Progress</b></label>
+        <label class="col-lg-4" id="lvlup"><b>LevelUp</b></label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Name</label>
+        <label class="col-lg-4">@Model.Name</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Class</label>
+        <label class="col-lg-4">@Model.Class.ToString()</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Level</label>
+        <label class="col-lg-4">@Model.Level</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">XP</label>
+        <label class="col-lg-4">@(Model.XP) / @(Model.Level * (Model.Level + 5))</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Health</label>
+        <label class="col-lg-4">@Model.Health</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Max Health</label>
+        <label class="col-lg-4">@Model.MaxHealth</label>
+        <input type="button" class="col-lg-4" id="lvlupmaxhealth" value="Levelup">
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Attack</label>
+        <label class="col-lg-4">@Model.Attack</label>
+        <input type="button" class="col-lg-4" id="lvlupattack" value="Levelup">
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Defence</label>
+        <label class="col-lg-4">@Model.Defence</label>
+        <input type="button" class="col-lg-4" id="lvlupdefence" value="Levelup">
+    </div>
+</div>
 
 <form method="post">
-    <input type="submit" name="btnPress" value="To the map"/>
+    <input type="submit" name="btnPress" value="To the map" />
 </form>
+
+@section scripts
+{
+    <script language="javascript">
+        $(function () {
+            var player = {};
+            $.get('/Map/GetPlayer', function (data) {
+                player = $.extend(true, player, data);
+
+                if (player.XP <= (player.Level * (5 + player.Level))) {
+                    $('#lvlup, #lvlupattack, #lvlupdefence, #lvlupmaxhealth').addClass('hidden');
+                }
+            });
+            console.log(player);
+
+            $('#lvlupmaxhealth').click(function () {
+                $.post('/Map/LvlUp', { stat: "max_hp" });
+                location.reload(true);
+            });
+            $('#lvlupattack').click(function () {
+                $.post('/Map/LvlUp', { stat: "attack" });
+                location.reload(true);
+            });
+            $('#lvlupdefence').click(function () {
+                $.post('/Map/LvlUp', { stat: "defence" });
+                location.reload(true);
+            });
+        });
+    </script>
+}
