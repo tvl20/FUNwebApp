@@ -91,6 +91,7 @@ namespace FUNwebApp.Models.DAL
 
 
                             MonsterEnemy Monster = new MonsterEnemy(x, y, Attack, ATKpointsPerAttack, ATKpointsRegen, TrueDMG, Defence, MovePointsPerMove, Health, Levels);
+                            Monster.Soort = Soort.Monster;
                             monsterEnemies.Add(Monster);
                         }
                     }
@@ -144,6 +145,7 @@ namespace FUNwebApp.Models.DAL
                             //}
 
                             HumanEnemy Human = new HumanEnemy(x, y, enemyDamageSource, Attack, ATKpointsPerAttack, ATKpointsRegen, critChance, Defence, MovePointsPerMove, Health, Levels);
+                            Human.Soort = Soort.Human;
                             humanEnemies.Add(Human);
                         }
                     }
@@ -196,6 +198,7 @@ namespace FUNwebApp.Models.DAL
                             }
 
                             BossEnemy boss = new BossEnemy(x, y, DMGspecialATK, enemyDamageSource, Attack, SpecialATKcooldown, ATKpointsPerAttack, Convert.ToInt32(ATKpointsRegen), Defence, MovePointsPerMove, Health, Levels);
+                            boss.Soort = Soort.Boss;
                             bosses.Add(boss);
                         }
                     }
