@@ -10,7 +10,6 @@ namespace FUNwebApp.Models.DAL
 {
     public interface IRoomRepo
     {
-        string getRoomLayout(int roomID);
         Point GetPlayerSpawnPoint(int roomID);
         List<MonsterEnemy> GetMonsterEnemies(int roomID);
         List<HumanEnemy> GetHumanEnemies(int roomID);
@@ -19,6 +18,7 @@ namespace FUNwebApp.Models.DAL
         List<Trap> GetTraps(int roomID);
         List<WeaponOnGround> GetWeaponOnGrounds(int roomID);
         //List<Thing> GetObjects(int roomID);
+        int getPreviousRoomID(int roomID);
         Room GetRoom(int roomID);
     }
 }

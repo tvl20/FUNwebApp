@@ -107,5 +107,22 @@ namespace FUNwebApp.Controllers
             Session["selected_character"] = player;
             return Json(player.CurrentWeapon, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetPreviousRoomID(int currentRoomID)
+        {
+            int id = roomRepo.getPreviousRoomID(currentRoomID);
+            return Json(id, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ChangedRoom(int roomID)
+        {
+            KillerFUNwebApp1._0.Models.Player player = Session["selected_character"] as Player;
+            player.CurrentRoomID = roomID;
+            playerRepo.updatePlayer(player);
+            Session["selected_character"] = player;
+            Room newRoom = roomRepo.GetRoom(roomID);
+            Session["current_room"] = newRoom;
+            return Json(newRoom, JsonRequestBehavior.AllowGet);
+        }
     }
 }

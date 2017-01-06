@@ -8,7 +8,6 @@ namespace KillerFUNwebApp1._0.Models
     public class Room
     {
         public int RoomID { get; set; }
-        public string RoomLayout { get; set; }
         public int NextRoomID { get; set; }
         public int LocationID { get; set; }
         public int PlayerSpawnX { get; set; }

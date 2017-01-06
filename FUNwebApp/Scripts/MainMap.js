@@ -26,6 +26,11 @@
                 Level: 0
             },
             currentRoom: {
+                Clear: false,
+                LocationID: 0,
+                PreviousRoomID: 0,
+                RoomID: 0,
+                NextRoomID: 0,
                 PlayerSpawnX: 2,
                 PlayerSpawnY: 2,
                 HumanEnemies: [{}],
@@ -51,12 +56,16 @@
 
         //gets the current room
         $.get("/Map/GetRoom", function (data) {
+            console.log("Data");
             console.log(data);
             defaults.currentRoom = $.extend(true, defaults.currentRoom, data);
             //defaults.currentRoom = data;
             if (data.HumanEnemies.length === 0){defaults.currentRoom.HumanEnemies = [];}
             if (data.MonsterEnemies.length === 0) { defaults.currentRoom.MonsterEnemies = []; }
             if (data.BossEnemies.length === 0) { defaults.currentRoom.BossEnemies = []; }
+            
+            if (data.Traps.length === 0) { defaults.currentRoom.Traps = []; }
+            if (data.WeaponOnGrounds.length === 0) { defaults.currentRoom.WeaponOnGrounds = []; }
 
             for (var i = 0; i < defaults.currentRoom.HumanEnemies.length; i++) {
                 defaults.currentRoom.HumanEnemies[i].X = defaults.currentRoom.HumanEnemies[i].X * defaults.tileSize;
@@ -70,8 +79,21 @@
                 defaults.currentRoom.BossEnemies[k].X = defaults.currentRoom.BossEnemies[k].X * defaults.tileSize;
                 defaults.currentRoom.BossEnemies[k].Y = defaults.currentRoom.BossEnemies[k].Y * defaults.tileSize;
             }
-            alert(defaults.currentRoom.BossEnemies.length);
+
+            for (var l = 0; l < defaults.currentRoom.Traps.length; l++) {
+                defaults.currentRoom.Traps[l].X = defaults.currentRoom.Traps[l].X * defaults.tileSize;
+                defaults.currentRoom.Traps[l].Y = defaults.currentRoom.Traps[l].Y * defaults.tileSize;
+            }
+            for (var m = 0; m < defaults.currentRoom.WeaponOnGrounds.length; m++) {
+                defaults.currentRoom.WeaponOnGrounds[m].X = defaults.currentRoom.WeaponOnGrounds[m].X * defaults.tileSize;
+                defaults.currentRoom.WeaponOnGrounds[m].Y = defaults.currentRoom.WeaponOnGrounds[m].Y * defaults.tileSize;
+            }
+            $.post("/Map/GetPreviousRoomID", { currentRoomID: defaults.currentRoom.RoomID }, function (data) {
+                defaults.currentRoom.PreviousRoomID = data;
+            });
             render();
+            console.log("Def");
+            console.log(defaults);
         });
 
         //gets the current player
@@ -86,7 +108,7 @@
             $('#max_hp').val(defaults.player.MaxHealth);
             render();
         });
-        console.log(defaults);
+        //console.log(defaults);
 
         var tileA = new Image();
         tileA.src = "/Graphics/Tile.png";
@@ -136,16 +158,43 @@
             }
         }
 
+        function drawOpenTraps() {
+            for (var i = 0; i < defaults.currentRoom.Traps.length; i++) {
+                if (defaults.currentRoom.Traps[i].Damage === 0) {
+                    ctx.beginPath();
+                    ctx.arc(defaults.currentRoom.Traps[i].X - defaults.tileSize / 2, defaults.currentRoom.Traps[i].Y - defaults.tileSize / 2, defaults.tileSize / 2, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = "grey";
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawWeaponsOnTheGround() {
+            for (var i = 0; i < defaults.currentRoom.WeaponOnGrounds.length; i++) {
+                ctx.beginPath();
+                ctx.arc(defaults.currentRoom.WeaponOnGrounds[i].X - defaults.tileSize / 2, defaults.currentRoom.WeaponOnGrounds[i].Y - defaults.tileSize / 2, defaults.tileSize / 2, 0, 2 * Math.PI, false);
+                ctx.fillStyle = "blue";
+                ctx.fill();
+            }
+        }
+
         function drawDoors() {
+            defaults.currentRoom.Clear = true;
             //left door
-            ctx.rect(0, 0, defaults.tileSize, defaults.roomHeight);
-            ctx.fillStyle = "brown";
-            ctx.fill();
+            if (defaults.currentRoom.RoomID !== defaults.currentRoom.PreviousRoomID) {
+                ctx.beginPath();
+                ctx.rect(0, 0, defaults.tileSize, defaults.roomHeight);
+                ctx.fillStyle = "brown";
+                ctx.fill();
+            }
 
             //right door
-            ctx.rect(defaults.roomWidth - defaults.tileSize, 0, defaults.roomWidth, defaults.roomHeight);
-            ctx.fillStyle = "brown";
-            ctx.fill();
+            if (defaults.currentRoom.RoomID !== defaults.currentRoom.NextRoomID) {
+                ctx.beginPath();
+                ctx.rect(defaults.roomWidth - defaults.tileSize, 0, defaults.roomWidth, defaults.roomHeight);
+                ctx.fillStyle = "brown";
+                ctx.fill();
+            }
         }
 
         function render() { //draw the room on the canvas element
@@ -157,12 +206,15 @@
                     defaults.currentRoom.BossEnemies.length === 0) {
                     drawDoors();
                 }
+                drawOpenTraps();
+                drawWeaponsOnTheGround();
                 drawPlayer();
                 drawEnemies();
             }
         }
 
         this.updateInfo = function () {
+            $('#location').text("Location: " + defaults.currentRoom.LocationID + ", CurrentRoomID: " + defaults.currentRoom.RoomID);
             $('#playername').text(defaults.player.Name);
             $('#currentLvl').text(defaults.player.Level);
             $('#xp').text(defaults.player.XP);
@@ -263,6 +315,7 @@
                         ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
                         ((pX === (eX - defaults.tileSize)) && (pY === eY)) //player is left of the enemy
                 ) {
+                    console.log(defaults.currentRoom.MonsterEnemies[i]);
                     if (defaults.currentRoom.MonsterEnemies[i].AttackPoints >= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack) {
                         defaults.currentRoom.MonsterEnemies[i].AttackPoints -= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack;
                         defaults.player.Health -= defaults.currentRoom.MonsterEnemies[i].TrueDamage;
@@ -444,9 +497,9 @@
                             damage = damage * 1.30;
                         }
 
-                        if (damage > defaults.currentRoom.MonsterEnemies[j].Defence) {
-                            damage -= defaults.currentRoom.MonsterEnemies[j].Defence;
-                            defaults.currentRoom.MonsterEnemies[j].Health -= damage;
+                        if (damage > defaults.currentRoom.HumanEnemies[j].Defence) {
+                            damage -= defaults.currentRoom.HumanEnemies[j].Defence;
+                            defaults.currentRoom.HumanEnemies[j].Health -= damage;
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -468,9 +521,9 @@
                             damage = damage * 1.30;
                         }
 
-                        if (damage > defaults.currentRoom.MonsterEnemies[k].Defence) {
-                            damage -= defaults.currentRoom.MonsterEnemies[k].Defence;
-                            defaults.currentRoom.MonsterEnemies[k].Health -= damage;
+                        if (damage > defaults.currentRoom.BossEnemies[k].Defence) {
+                            damage -= defaults.currentRoom.BossEnemies[k].Defence;
+                            defaults.currentRoom.BossEnemies[k].Health -= damage;
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -488,7 +541,6 @@
 
         //check what is on a given position {enemy, weapon, trap, empty}
         function getOccupation(x, y) {
-            var completed = false;
             for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
                 if ((defaults.currentRoom.MonsterEnemies[i].X === x) &&
                     (defaults.currentRoom.MonsterEnemies[i].Y === y)) {
@@ -508,14 +560,13 @@
                 }
             }
 
-            for (var l = 0; l < defaults.currentRoom.WeaponOnGrounds; l++) {
+            for (var l = 0; l < defaults.currentRoom.WeaponOnGrounds.length; l++) {
                 if ((defaults.currentRoom.WeaponOnGrounds[l].X === x) &&
                     (defaults.currentRoom.WeaponOnGrounds[l].Y === y)) {
                     return "weapon";
                 }
             }
-
-            for (var m = 0; m < defaults.currentRoom.Traps; m++) {
+            for (var m = 0; m < defaults.currentRoom.Traps.length; m++) {
                 if ((defaults.currentRoom.Traps[m].X === x) &&
                     (defaults.currentRoom.Traps[m].Y === y)) {
                     return "trap";
@@ -528,7 +579,7 @@
         function pickupWeapon(weaponID) {
             for (var i = 0; i < defaults.currentRoom.WeaponOnGrounds.length; i++) {
                 if (defaults.currentRoom.WeaponOnGrounds[i].WeaponID === weaponID) {
-                    defaults.currentRoom.WeaponOnGrounds[i].WeaponID = defaults.player.CurrentWeapon.weaponID; //change the weapon on the ground to be the current weapon of the player
+                    defaults.currentRoom.WeaponOnGrounds[i].WeaponID = defaults.player.CurrentWeapon.ID; //change the weapon on the ground to be the current weapon of the player
 
                     $.post('/Map/NewWeapon', { weaponID: weaponID }, function(data) {
                         $.extend(true, defaults.player.CurrentWeapon, data); //update the player's weapon
@@ -555,6 +606,8 @@
                                         if ((defaults.currentRoom.Traps[i].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[i].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[i].Damage;
+                                            alert("ITS A TRAP! (-" + defaults.currentRoom.Traps[i].Damage + " hp)");
+                                            defaults.currentRoom.Traps[i].Damage = 0;
                                             $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
@@ -583,6 +636,8 @@
                                         if ((defaults.currentRoom.Traps[j].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[j].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[j].Damage;
+                                            alert("ITS A TRAP! (-" + defaults.currentRoom.Traps[j].Damage + " hp)");
+                                            defaults.currentRoom.Traps[j].Damage = 0;
                                             $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
@@ -597,6 +652,9 @@
                                     }
                                 }
                             }
+                        } else if (defaults.currentRoom.Clear && defaults.currentRoom.RoomID !== defaults.currentRoom.NextRoomID) {
+                            $.post('/Map/ChangedRoom', { roomID: defaults.currentRoom.NextRoomID });
+                            location.reload(true);
                         }
                         break;
                     case 37: //Left
@@ -611,6 +669,8 @@
                                         if ((defaults.currentRoom.Traps[k].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[k].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[k].Damage;
+                                            alert("ITS A TRAP! (-" + defaults.currentRoom.Traps[k].Damage + " hp)");
+                                            defaults.currentRoom.Traps[k].Damage = 0;
                                             $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
@@ -625,6 +685,9 @@
                                     }
                                 }
                             }
+                        } else if (defaults.currentRoom.Clear && defaults.currentRoom.RoomID !== defaults.currentRoom.PreviousRoomID) {
+                            $.post('/Map/ChangedRoom', { roomID: defaults.currentRoom.PreviousRoomID });
+                            location.reload(true);
                         }
                         break;
                     case 40: //Down
@@ -639,6 +702,8 @@
                                         if ((defaults.currentRoom.Traps[l].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[l].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[l].Damage;
+                                            alert("ITS A TRAP! (-" + defaults.currentRoom.Traps[l].Damage + " hp)");
+                                            defaults.currentRoom.Traps[l].Damage = 0;
                                             $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }

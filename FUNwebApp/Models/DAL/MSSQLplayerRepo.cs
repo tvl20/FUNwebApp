@@ -195,9 +195,10 @@ namespace KillerAppFUN2.DAL
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("UPDATE Players SET CurrentWeaponID=@weaponID, Lvl=@playerLvl, XP=@xp, MaxHP=@playerMaxHP, HP=@playerHP, Defence=@playerDefence WHERE PlayerName=@playerName", connection))
+                using (SqlCommand cmd = new SqlCommand("UPDATE Players SET CurrentRoomID=@roomID, CurrentWeaponID=@weaponID, Lvl=@playerLvl, XP=@xp, MaxHP=@playerMaxHP, HP=@playerHP, Defence=@playerDefence WHERE PlayerName=@playerName", connection))
                 {
                     cmd.Connection = connection;
+                    cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = p.CurrentRoomID;
                     cmd.Parameters.Add("@playerName", SqlDbType.VarChar).Value = p.Name;
                     cmd.Parameters.Add("@weaponID", SqlDbType.Int).Value = p.CurrentWeapon.ID;
                     cmd.Parameters.Add("@playerLvl", SqlDbType.Int).Value = p.Level;

@@ -15,11 +15,6 @@ namespace FUNwebApp.Models.DAL
             repo = _repo;
         }
 
-        public string getRoomLayout(int roomID)
-        {
-            return repo.getRoomLayout(roomID);
-        }
-
         public Point GetPlayerSpawnPoint(int roomID)
         {
             return repo.GetPlayerSpawnPoint(roomID);
@@ -63,6 +58,11 @@ namespace FUNwebApp.Models.DAL
         public Room GetRoom(int roomID)
         {
             return repo.GetRoom(roomID);
+        }
+
+        public int getPreviousRoomID(int roomID)
+        {
+            return repo.getPreviousRoomID(roomID);
         }
     }
 }

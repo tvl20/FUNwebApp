@@ -12,6 +12,7 @@ namespace KillerFUNwebApp1._0.Models
         public int Level { get; set; }
         public int Health { get; set; }
         public int Attack { get; set; }
+        public int AttackPoints { get; set; }
         public int AttackPointsPerAttack { get; set; }
         public int AttackPointsRegen { get; set; }
         public int Defence { get; set; }

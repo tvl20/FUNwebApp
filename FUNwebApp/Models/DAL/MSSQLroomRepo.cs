@@ -14,14 +14,14 @@ namespace FUNwebApp.Models.DAL
     public class MSSQLroomRepo : IRoomRepo
     {
         private readonly string conn = @"Data Source=DESKTOP-9K8HK1F;Initial Catalog=FUNwebKillerApp;Integrated Security=True";
-
-        public string getRoomLayout(int roomID)
+        
+        public int getPreviousRoomID(int roomID)
         {
-            string layout = "";
+            int id = roomID;
             using (SqlConnection connection = new SqlConnection(conn))
             {
                 connection.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT RoomLayOut FROM Rooms WHERE RoomID = @roomID", connection))
+                using (SqlCommand cmd = new SqlCommand("SELECT RoomID FROM Rooms WHERE NextRoomID = @roomID", connection))
                 {
                     cmd.Connection = connection;
                     cmd.Parameters.Add("@roomID", SqlDbType.Int).Value = roomID;
@@ -29,12 +29,15 @@ namespace FUNwebApp.Models.DAL
                     {
                         while (reader.Read())
                         {
-                            layout = reader.GetString(0);
+                            if (!reader.IsDBNull(0))
+                            {
+                                id = reader.GetInt32(0);
+                            }
                         }
                     }
                 }
             }
-            return layout;
+            return id;
         }
 
         public Point GetPlayerSpawnPoint(int roomID)
@@ -222,9 +225,9 @@ namespace FUNwebApp.Models.DAL
                     {
                         while (reader.Read())
                         {
-                            int x = reader.GetInt32(1);
-                            int y = reader.GetInt32(2);
-                            int dmg = reader.GetInt32(3);
+                            int x = reader.GetInt32(0);
+                            int y = reader.GetInt32(1);
+                            int dmg = reader.GetInt32(2);
 
                             traps.Add(new Trap(dmg, x, y));
                         }
@@ -249,9 +252,9 @@ namespace FUNwebApp.Models.DAL
                     {
                         while (reader.Read())
                         {
-                            int x = reader.GetInt32(1);
-                            int y = reader.GetInt32(2);
-                            int weaponID = reader.GetInt32(3);
+                            int x = reader.GetInt32(0);
+                            int y = reader.GetInt32(1);
+                            int weaponID = reader.GetInt32(2);
 
                             weaponOnGrounds.Add(new WeaponOnGround(weaponID, x, y));
                         }
@@ -268,7 +271,6 @@ namespace FUNwebApp.Models.DAL
             returnRoom.HumanEnemies = this.GetHumanEnemies(roomID);
             returnRoom.BossEnemies = this.GetBossEnemies(roomID);
             returnRoom.MonsterEnemies = this.GetMonsterEnemies(roomID);
-            returnRoom.RoomLayout = this.getRoomLayout(roomID);
             //returnRoom.Things = this.GetObjects(roomID);
             returnRoom.Traps = this.GetTraps(roomID);
             returnRoom.WeaponOnGrounds = this.GetWeaponOnGrounds(roomID);
@@ -291,6 +293,10 @@ namespace FUNwebApp.Models.DAL
                             if (!reader.IsDBNull(1))
                             {
                                 returnRoom.NextRoomID = reader.GetInt32(1);
+                            }
+                            else
+                            {
+                                returnRoom.NextRoomID = roomID;
                             }
                             returnRoom.PlayerSpawnX = reader.GetInt32(2);
                             returnRoom.PlayerSpawnY = reader.GetInt32(3);
