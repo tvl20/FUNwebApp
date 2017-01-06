@@ -47,10 +47,23 @@
         <label class="col-lg-4">@Model.Defence</label>
         <input type="button" class="col-lg-4" id="lvlupdefence" value="Levelup">
     </div>
+    <div class="row">
+        <label class="col-lg-4">Weapon name:</label>
+        <label class="col-lg-4">@Model.CurrentWeapon.WeaponName</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Weapon damage</label>
+        <label class="col-lg-4">@Model.CurrentWeapon.WeaponDamage</label>
+    </div>
+    <div class="row">
+        <label class="col-lg-4">Weapon crit chance (%)</label>
+        <label class="col-lg-4">@Model.CurrentWeapon.WeaponCrit</label>
+    </div>
 </div>
 
 <form method="post">
     <input type="submit" name="btnPress" value="To the map" />
+    <input type="submit" name="btnPress" value="Back to character select" />
 </form>
 
 @section scripts

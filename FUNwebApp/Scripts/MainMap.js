@@ -19,14 +19,15 @@
                 MovePointsPerMove: 1,
                 Attack: 1,
                 CurrentWeapon: {
-                    WeaponDamage: 1
+                    WeaponDamage: 1,
+                    WeaponCrit: 0
                 },
                 XP: 0,
                 Level: 0
             },
             currentRoom: {
-                PlayerSpawnX: 1,
-                PlayerSpawnY: 5,
+                PlayerSpawnX: 2,
+                PlayerSpawnY: 2,
                 HumanEnemies: [{}],
                 MonsterEnemies: [{}],
                 BossEnemies: [{}],
@@ -172,6 +173,9 @@
             $('#max_mp').text(defaults.player.MovePointsPerMove);
             $('#ap').text(defaults.player.AttackPoints);
             $('#max_ap').text(defaults.player.AttackPointsPerAttack);
+            $('#weaponname').text(defaults.player.CurrentWeapon.WeaponName);
+            $('#weapondamage').text(defaults.player.CurrentWeapon.WeaponDamage);
+            $('#weaponcrit').text(defaults.player.CurrentWeapon.WeaponCrit);
         }
 
         this.giveMovePoints = function () {
@@ -406,51 +410,76 @@
                 defaults.player.AttackPoints -= defaults.player.AttackPointsPerAttack;
                 
                 var damage;
+                var rnd;
                 for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
                     if ((defaults.currentRoom.MonsterEnemies[i].X === enemyX) &&
                         (defaults.currentRoom.MonsterEnemies[i].Y === enemyY)) {
-                        damage = (defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) - defaults.currentRoom.MonsterEnemies[i].Defence;
-                        defaults.currentRoom.MonsterEnemies[i].Health -= damage;
+                        rnd = Math.floor((Math.random() * 101));
+                        damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
+                        if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
+                            damage = damage * 1.30;
+                        }
 
-                        //give the player XP for the damage inflicted
-                        $.post('/Map/AddPlayerXP', { xp: damage });
-                        defaults.player.XP += damage;
-                        if (defaults.currentRoom.MonsterEnemies[i].Health <= 0) {
-                            defaults.currentRoom.MonsterEnemies.splice(i, 1);
-                            i--;
-                            render();
+                        if (damage > defaults.currentRoom.MonsterEnemies[i].Defence) {
+                            damage -= defaults.currentRoom.MonsterEnemies[i].Defence;
+                            defaults.currentRoom.MonsterEnemies[i].Health -= damage;
+
+                            //give the player XP for the damage inflicted
+                            $.post('/Map/AddPlayerXP', { xp: damage });
+                            defaults.player.XP += damage;
+                            if (defaults.currentRoom.MonsterEnemies[i].Health <= 0) {
+                                defaults.currentRoom.MonsterEnemies.splice(i, 1);
+                                i--;
+                                render();
+                            }
                         }
                     }
                 }
                 for (var j = 0; j < defaults.currentRoom.HumanEnemies.length; j++) {
                     if ((defaults.currentRoom.HumanEnemies[j].X === enemyX) &&
                         (defaults.currentRoom.HumanEnemies[j].Y === enemyY)) {
-                        damage = (defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) - defaults.currentRoom.HumanEnemies[j].Defence;
-                        defaults.currentRoom.HumanEnemies[j].Health -= damage;
+                        rnd = Math.floor((Math.random() * 101));
+                        damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
+                        if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
+                            damage = damage * 1.30;
+                        }
 
-                        //give the player XP for the damage inflicted
-                        $.post('/Map/AddPlayerXP', { xp: damage });
-                        defaults.player.XP += damage;
-                        if (defaults.currentRoom.HumanEnemies[j].Health <= 0) {
-                            defaults.currentRoom.HumanEnemies.splice(j, 1);
-                            j--;
-                            render();
+                        if (damage > defaults.currentRoom.MonsterEnemies[j].Defence) {
+                            damage -= defaults.currentRoom.MonsterEnemies[j].Defence;
+                            defaults.currentRoom.MonsterEnemies[j].Health -= damage;
+
+                            //give the player XP for the damage inflicted
+                            $.post('/Map/AddPlayerXP', { xp: damage });
+                            defaults.player.XP += damage;
+                            if (defaults.currentRoom.HumanEnemies[j].Health <= 0) {
+                                defaults.currentRoom.HumanEnemies.splice(j, 1);
+                                j--;
+                                render();
+                            }
                         }
                     }
                 }
                 for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
                     if ((defaults.currentRoom.BossEnemies[k].X === enemyX) &&
                         (defaults.currentRoom.BossEnemies[k].Y === enemyY)) {
-                        damage = (defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage) - defaults.currentRoom.BossEnemies[k].Defence;
-                        defaults.currentRoom.BossEnemies[k].Health -= damage;
+                        rnd = Math.floor((Math.random() * 101));
+                        damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
+                        if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
+                            damage = damage * 1.30;
+                        }
 
-                        //give the player XP for the damage inflicted
-                        $.post('/Map/AddPlayerXP', { xp: damage });
-                        defaults.player.XP += damage;
-                        if (defaults.currentRoom.BossEnemies[k].Health <= 0) {
-                            defaults.currentRoom.BossEnemies.splice(k, 1);
-                            k--;
-                            render();
+                        if (damage > defaults.currentRoom.MonsterEnemies[k].Defence) {
+                            damage -= defaults.currentRoom.MonsterEnemies[k].Defence;
+                            defaults.currentRoom.MonsterEnemies[k].Health -= damage;
+
+                            //give the player XP for the damage inflicted
+                            $.post('/Map/AddPlayerXP', { xp: damage });
+                            defaults.player.XP += damage;
+                            if (defaults.currentRoom.BossEnemies[k].Health <= 0) {
+                                defaults.currentRoom.BossEnemies.splice(k, 1);
+                                k--;
+                                render();
+                            }
                         }
                     }
                 }

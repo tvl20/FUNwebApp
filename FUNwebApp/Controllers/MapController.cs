@@ -31,7 +31,10 @@ namespace FUNwebApp.Controllers
         [HttpPost]
         public ActionResult Player(string btnPress)
         {
-            if (btnPress == "To the map")
+            if (btnPress == "Back to character select")
+            {
+                return Redirect("/");
+            }else if (btnPress == "To the map")
             {
                 Player currentPlayer = Session["selected_character"] as Player;
                 Session["current_room"] = roomRepo.GetRoom(currentPlayer.CurrentRoomID);
