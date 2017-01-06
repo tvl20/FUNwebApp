@@ -2,6 +2,7 @@
     function Spel(config) {
         var canvas = document.getElementById("A");
         var ctx = canvas.getContext("2d");
+        var regenCounter = 0;
 
         var defaults = {
             tileSize: 50,
@@ -20,32 +21,15 @@
                 CurrentWeapon: {
                     WeaponDamage: 1
                 },
-                XP: 0
+                XP: 0,
+                Level: 0
             },
             currentRoom: {
                 PlayerSpawnX: 1,
                 PlayerSpawnY: 5,
-                HumanEnemies: [
-                    {
-                        MovePoints: 0,
-                        AttackPoints: 0,
-                        Defence: 0
-                    }
-                ],
-                MonsterEnemies: [
-                    {
-                        MovePoints: 0,
-                        AttackPoints: 0,
-                        Defence: 0
-                    }
-                ],
-                BossEnemies: [
-                    {
-                        MovePoints: 0,
-                        AttackPoints: 0,
-                        Defence: 0
-                    }
-                ],
+                HumanEnemies: [{}],
+                MonsterEnemies: [{}],
+                BossEnemies: [{}],
                 WeaponOnGrounds: [
                     {
                         X: 0,
@@ -69,6 +53,10 @@
             console.log(data);
             defaults.currentRoom = $.extend(true, defaults.currentRoom, data);
             //defaults.currentRoom = data;
+            if (data.HumanEnemies.length === 0){defaults.currentRoom.HumanEnemies = [];}
+            if (data.MonsterEnemies.length === 0) { defaults.currentRoom.MonsterEnemies = []; }
+            if (data.BossEnemies.length === 0) { defaults.currentRoom.BossEnemies = []; }
+
             for (var i = 0; i < defaults.currentRoom.HumanEnemies.length; i++) {
                 defaults.currentRoom.HumanEnemies[i].X = defaults.currentRoom.HumanEnemies[i].X * defaults.tileSize;
                 defaults.currentRoom.HumanEnemies[i].Y = defaults.currentRoom.HumanEnemies[i].Y * defaults.tileSize;
@@ -81,6 +69,7 @@
                 defaults.currentRoom.BossEnemies[k].X = defaults.currentRoom.BossEnemies[k].X * defaults.tileSize;
                 defaults.currentRoom.BossEnemies[k].Y = defaults.currentRoom.BossEnemies[k].Y * defaults.tileSize;
             }
+            alert(defaults.currentRoom.BossEnemies.length);
             render();
         });
 
@@ -111,21 +100,11 @@
         tileB.onload = render;
 
         function drawTileA() {
-            for (var x = 0; x < Math.round(defaults.roomWidth / defaults.tileSize) ; x++) {
-                for (var y = 0; y < Math.round(defaults.roomHeight / defaults.tileSize) ; y++) {
+            for (var x = 0; x < Math.round(defaults.roomWidth / defaults.tileSize); x++) {
+                for (var y = 0; y < Math.round(defaults.roomHeight / defaults.tileSize); y++) {
                     ctx.drawImage(tileA, x * tileA.width, y * tileA.height);
                 }
             }
-        }
-
-        this.updateInfo = function () {
-            $('#playername').text(defaults.player.Name);
-            $('#hp').text(defaults.player.Health);
-            $('#max_hp').text(defaults.player.MaxHealth);
-            $('#mp').text(defaults.player.MovePoints);
-            $('#max_mp').text(defaults.player.MovePointsPerMove);
-            $('#ap').text(defaults.player.AttackPoints);
-            $('#max_ap').text(defaults.player.AttackPointsPerAttack);
         }
 
         function drawPlayer() {
@@ -156,13 +135,43 @@
             }
         }
 
-        function render() {
+        function drawDoors() {
+            //left door
+            ctx.rect(0, 0, defaults.tileSize, defaults.roomHeight);
+            ctx.fillStyle = "brown";
+            ctx.fill();
+
+            //right door
+            ctx.rect(defaults.roomWidth - defaults.tileSize, 0, defaults.roomWidth, defaults.roomHeight);
+            ctx.fillStyle = "brown";
+            ctx.fill();
+        }
+
+        function render() { //draw the room on the canvas element
             if (tileA.complete && tileB.complete) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawTileA();
+                if (defaults.currentRoom.MonsterEnemies.length === 0 &&
+                    defaults.currentRoom.HumanEnemies.length === 0 &&
+                    defaults.currentRoom.BossEnemies.length === 0) {
+                    drawDoors();
+                }
                 drawPlayer();
                 drawEnemies();
             }
+        }
+
+        this.updateInfo = function () {
+            $('#playername').text(defaults.player.Name);
+            $('#currentLvl').text(defaults.player.Level);
+            $('#xp').text(defaults.player.XP);
+            $('#targetxp').text(defaults.player.Level * (defaults.player.Level + 5));
+            $('#hp').text(defaults.player.Health);
+            $('#max_hp').text(defaults.player.MaxHealth);
+            $('#mp').text(defaults.player.MovePoints);
+            $('#max_mp').text(defaults.player.MovePointsPerMove);
+            $('#ap').text(defaults.player.AttackPoints);
+            $('#max_ap').text(defaults.player.AttackPointsPerAttack);
         }
 
         this.giveMovePoints = function () {
@@ -221,7 +230,19 @@
             }
         }
 
-        //enemy action
+        this.playerRegen = function () {
+            if (defaults.player.Health < defaults.player.MaxHealth) {
+                if (regenCounter === 6) {
+                    regenCounter = 0;
+                    defaults.player.Health += (Math.round(defaults.player.Health / 100) + 1);
+                    $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
+                } else {
+                    regenCounter++;
+                }
+            }
+        }
+
+        //make an enemy do something (attacking the player or moving)
         this.actionEnemy = function () {
             var pX = defaults.player.X;
             var pY = defaults.player.Y;
@@ -238,7 +259,14 @@
                         ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
                         ((pX === (eX - defaults.tileSize)) && (pY === eY)) //player is left of the enemy
                 ) {
-                    //attack player
+                    if (defaults.currentRoom.MonsterEnemies[i].AttackPoints >= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack) {
+                        defaults.currentRoom.MonsterEnemies[i].AttackPoints -= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack;
+                        defaults.player.Health -= defaults.currentRoom.MonsterEnemies[i].TrueDamage;
+                        if (defaults.player.Defence < defaults.currentRoom.MonsterEnemies[i].Attack){
+                            defaults.player.Health -= (defaults.currentRoom.MonsterEnemies[i].Attack - defaults.player.Defence);
+                        }
+                        $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
+                    }
                 } else {
                     switch (getEnemyMoveDir(eX, eY)) {
                         case "N":
@@ -267,7 +295,18 @@
                         ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
                         ((pX === (eX - defaults.tileSize)) && (pY === eY)) //player is left of the enemy
                 ) {
-                    //attack player
+                    if (defaults.currentRoom.HumanEnemies[j].AttackPoints >= defaults.currentRoom.HumanEnemies[j].AttackPointsPerAttack) {
+                        defaults.currentRoom.HumanEnemies[j].AttackPoints -= defaults.currentRoom.HumanEnemies[j].AttackPointsPerAttack;
+                        var rnd = Math.floor((Math.random() * 101));
+                        var dmg = defaults.currentRoom.HumanEnemies[j].Attack;
+                        if (rnd >= defaults.currentRoom.HumanEnemies[j].CritChance) {
+                            dmg = Math.round(dmg * 1.30);
+                        }
+                        if (defaults.player.Defence < dmg) {
+                            defaults.player.Health -= (dmg - defaults.player.Defence);
+                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
+                        }
+                    }
                 } else {
                     switch (getEnemyMoveDir(eX, eY)) {
                         case "N":
@@ -296,7 +335,13 @@
                         ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
                         ((pX === (eX - defaults.tileSize)) && (pY === eY)) //player is left of the enemy
                 ) {
-                    //attack player
+                    if (defaults.currentRoom.BossEnemies[k].AttackPoints >= defaults.currentRoom.BossEnemies[k].AttackPointsPerAttack) {
+                        defaults.currentRoom.BossEnemies[k].AttackPoints -= defaults.currentRoom.BossEnemies[k].AttackPointsPerAttack;
+                        if (defaults.player.Defence > defaults.currentRoom.BossEnemies[k].Attack) {
+                            defaults.player.Health -= (defaults.currentRoom.BossEnemies[k].Attack - defaults.player.Defence);
+                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
+                        }
+                    }
                 } else {
                     switch (getEnemyMoveDir(eX, eY)) {
                         case "N":
@@ -322,7 +367,7 @@
             if (defaults.player.Y > y) { return "S" }
             if (defaults.player.X < x) { return "W" }
             if (defaults.player.X > x) { return "E" }
-            return ""; //default
+            return ""; //default (theoretically it should never reach this)
         }
 
         function moveEnemy(x, y, soort, index) { //0 = monster, 1 = human, 2 = boss
@@ -369,6 +414,7 @@
 
                         //give the player XP for the damage inflicted
                         $.post('/Map/AddPlayerXP', { xp: damage });
+                        defaults.player.XP += damage;
                         if (defaults.currentRoom.MonsterEnemies[i].Health <= 0) {
                             defaults.currentRoom.MonsterEnemies.splice(i, 1);
                             i--;
@@ -384,6 +430,7 @@
 
                         //give the player XP for the damage inflicted
                         $.post('/Map/AddPlayerXP', { xp: damage });
+                        defaults.player.XP += damage;
                         if (defaults.currentRoom.HumanEnemies[j].Health <= 0) {
                             defaults.currentRoom.HumanEnemies.splice(j, 1);
                             j--;
@@ -399,6 +446,7 @@
 
                         //give the player XP for the damage inflicted
                         $.post('/Map/AddPlayerXP', { xp: damage });
+                        defaults.player.XP += damage;
                         if (defaults.currentRoom.BossEnemies[k].Health <= 0) {
                             defaults.currentRoom.BossEnemies.splice(k, 1);
                             k--;
@@ -409,7 +457,7 @@
             }
         }
 
-        //check what is on the position {enemy, weapon, trap, empty}
+        //check what is on a given position {enemy, weapon, trap, empty}
         function getOccupation(x, y) {
             var completed = false;
             for (var i = 0; i < defaults.currentRoom.MonsterEnemies.length; i++) {
@@ -448,6 +496,17 @@
             return "empty";
         }
 
+        function pickupWeapon(weaponID) {
+            for (var i = 0; i < defaults.currentRoom.WeaponOnGrounds.length; i++) {
+                if (defaults.currentRoom.WeaponOnGrounds[i].WeaponID === weaponID) {
+                    defaults.currentRoom.WeaponOnGrounds[i].WeaponID = defaults.player.CurrentWeapon.weaponID; //change the weapon on the ground to be the current weapon of the player
+
+                    $.post('/Map/NewWeapon', { weaponID: weaponID }, function(data) {
+                        $.extend(true, defaults.player.CurrentWeapon, data); //update the player's weapon
+                    });
+                }
+            }
+        }
 
         //Speler controls
         $(window).keyup(function (e) {
@@ -467,11 +526,19 @@
                                         if ((defaults.currentRoom.Traps[i].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[i].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[i].Damage;
+                                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
                                 }
-                            } else {
+                            } else if (occ === "enemy") {
                                 attackEnemy(defaults.player.X, pos);
+                            } else if (occ === "weapon") {
+                                for (var m = 0; m < defaults.currentRoom.WeaponOnGrounds.length; m++) {
+                                    if ((defaults.currentRoom.WeaponOnGrounds[m].X === defaults.player.X) &&
+                                        (defaults.currentRoom.WeaponOnGrounds[m].Y === pos)) {
+                                        pickupWeapon(defaults.currentRoom.WeaponOnGrounds[m].WeaponID);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -487,11 +554,19 @@
                                         if ((defaults.currentRoom.Traps[j].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[j].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[j].Damage;
+                                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
                                 }
-                            } else {
+                            } else if (occ === "enemy") {
                                 attackEnemy(pos, defaults.player.Y);
+                            } else if (occ === "weapon") {
+                                for (var n = 0; n < defaults.currentRoom.WeaponOnGrounds.length; n++) {
+                                    if ((defaults.currentRoom.WeaponOnGrounds[n].X === pos) &&
+                                        (defaults.currentRoom.WeaponOnGrounds[n].Y === defaults.player.Y)) {
+                                        pickupWeapon(defaults.currentRoom.WeaponOnGrounds[n].WeaponID);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -507,11 +582,19 @@
                                         if ((defaults.currentRoom.Traps[k].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[k].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[k].Damage;
+                                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
                                 }
-                            } else {
+                            } else if (occ === "enemy") {
                                 attackEnemy(pos, defaults.player.Y);
+                            } else if (occ === "weapon") {
+                                for (var o = 0; o < defaults.currentRoom.WeaponOnGrounds.length; o++) {
+                                    if ((defaults.currentRoom.WeaponOnGrounds[o].X === pos) &&
+                                        (defaults.currentRoom.WeaponOnGrounds[o].Y === defaults.player.Y)) {
+                                        pickupWeapon(defaults.currentRoom.WeaponOnGrounds[o].WeaponID);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -527,17 +610,23 @@
                                         if ((defaults.currentRoom.Traps[l].X === defaults.player.X) &&
                                             (defaults.currentRoom.Traps[l].Y === defaults.player.Y)) {
                                             defaults.player.Health -= defaults.currentRoom.Traps[l].Damage;
+                                            $.post('/Map/UpdatePlayerHealth', { hp: defaults.player.Health });
                                         }
                                     }
                                 }
-                            } else {
+                            } else if (occ === "enemy") {
                                 attackEnemy(defaults.player.X, pos);
+                            } else if (occ === "weapon") {
+                                for (var p = 0; p < defaults.currentRoom.WeaponOnGrounds.length; p++) {
+                                    if ((defaults.currentRoom.WeaponOnGrounds[p].X === defaults.player.X) &&
+                                        (defaults.currentRoom.WeaponOnGrounds[p].Y === pos)) {
+                                        pickupWeapon(defaults.currentRoom.WeaponOnGrounds[p].WeaponID);
+                                    }
+                                }
                             }
                         }
                         break;
                 }
-
-                //Spel opnieuw renderen
                 render();
             }
         });
@@ -554,6 +643,7 @@
         game.giveMovePoints();
         game.giveAttackPoints();
         game.actionEnemy();
+        game.playerRegen();
         game.updateInfo();
     }
 

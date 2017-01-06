@@ -16,6 +16,7 @@ namespace KillerFUNwebApp1._0.Models
         public int AttackPointsRegen { get; set; }
         public int Defence { get; set; }
         public int MovePointsPerMove { get; set; }
+        public int MovePoints { get; set; }
 
         public void move(Direction direction)
         {

@@ -65,6 +65,14 @@ namespace FUNwebApp.Controllers
             return Json(player, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult UpdatePlayerHealth(int hp)
+        {
+            var player = (Player)Session["selected_character"];
+            player.Health = hp;
+            Session["selected_character"] = player;
+            return Json(player, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult LvlUp(string stat)
         {
             if (stat == "max_hp")
@@ -87,6 +95,14 @@ namespace FUNwebApp.Controllers
             }
 
             return Redirect("/Map/Player");
+        }
+
+        public ActionResult NewWeapon(int weaponID)
+        {
+            KillerFUNwebApp1._0.Models.Player player = Session["selected_character"] as Player;
+            player.PickUpWeapon(weaponID);
+            Session["selected_character"] = player;
+            return Json(player.CurrentWeapon, JsonRequestBehavior.AllowGet);
         }
     }
 }

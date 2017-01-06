@@ -97,5 +97,12 @@ namespace KillerFUNwebApp1._0.Models
         {
             return "Name: " + Name + ", Level: " + Level.ToString() + ", Class: " + Class.ToString();
         }
+
+        public void PickUpWeapon(int weaponID)
+        {
+            Weapon newWeapon = weaponRepoBizLog.getWeaponByID(weaponID);
+            CurrentWeapon = newWeapon;
+            playerRepoBizLog.updatePlayer(this);
+        }
     }
 }
