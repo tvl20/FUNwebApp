@@ -18,15 +18,5 @@ namespace KillerFUNwebApp1._0.Models
         public int Defence { get; set; }
         public int MovePointsPerMove { get; set; }
         public int MovePoints { get; set; }
-
-        public void move(Direction direction)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void attack(Direction directoin)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -124,5 +124,12 @@ namespace FUNwebApp.Controllers
             Session["current_room"] = newRoom;
             return Json(newRoom, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetLocation()
+        {
+            Room room = Session["current_room"] as Room;
+            Location location = roomRepo.GetLocation(room.LocationID);
+            return Json(location, JsonRequestBehavior.AllowGet);
+        }
     }
 }

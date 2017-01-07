@@ -64,5 +64,10 @@ namespace FUNwebApp.Models.DAL
         {
             return repo.getPreviousRoomID(roomID);
         }
+
+        public Location GetLocation(int locationID)
+        {
+            return repo.GetLocation(locationID);
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace FUNwebApp.Models.DAL
 {
     public interface IRoomRepo
     {
+        Location GetLocation(int locationID);
         Point GetPlayerSpawnPoint(int roomID);
         List<MonsterEnemy> GetMonsterEnemies(int roomID);
         List<HumanEnemy> GetHumanEnemies(int roomID);

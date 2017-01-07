@@ -36,20 +36,10 @@
                 HumanEnemies: [{}],
                 MonsterEnemies: [{}],
                 BossEnemies: [{}],
-                WeaponOnGrounds: [
-                    {
-                        X: 0,
-                        Y: 0
-                    }
-                ],
-                Traps: [
-                    {
-                        Damage: 0,
-                        X: 0,
-                        Y: 0
-                    }
-                ]
-            }
+                WeaponOnGrounds: [{}],
+                Traps: [{}]
+            },
+            currentLocation: {}
         };
 
         defaults = $.extend(true, defaults, config);
@@ -90,6 +80,9 @@
             }
             $.post("/Map/GetPreviousRoomID", { currentRoomID: defaults.currentRoom.RoomID }, function (data) {
                 defaults.currentRoom.PreviousRoomID = data;
+            });
+            $.get("/Map/GetLocation", function (data) {
+                $.extend(true, defaults.currentLocation, data);
             });
             render();
             console.log("Def");
@@ -214,7 +207,7 @@
         }
 
         this.updateInfo = function () {
-            $('#location').text("Location: " + defaults.currentRoom.LocationID + ", CurrentRoomID: " + defaults.currentRoom.RoomID);
+            $('#location').text("Location: " + defaults.currentLocation.Naam + ", Amount of Rooms: " + defaults.currentLocation.AmountOfRooms);
             $('#playername').text(defaults.player.Name);
             $('#currentLvl').text(defaults.player.Level);
             $('#xp').text(defaults.player.XP);

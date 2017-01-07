@@ -307,5 +307,32 @@ namespace FUNwebApp.Models.DAL
 
             return returnRoom;
         }
+
+        public Location GetLocation(int locationID)
+        {
+            Location loc = new Location();
+            using (SqlConnection connection = new SqlConnection(conn))
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SELECT LocationName, AmountOfRooms FROM Locations WHERE LocationID = @location", connection))
+                {
+                    cmd.Connection = connection;
+                    cmd.Parameters.Add("@location", SqlDbType.Int).Value = locationID;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string locationName = reader.GetString(0);
+                            int amountOfRooms = reader.GetInt32(1);
+
+                            loc.Naam = locationName;
+                            loc.AmountOfRooms = amountOfRooms;
+                        }
+                    }
+                }
+            }
+            return loc;
+        }
     }
 }
