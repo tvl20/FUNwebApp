@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KillerFUNwebApp1._0.Models;
+using KillerFUNwebApp1._0.Models.Enums;
 
 namespace KillerAppFUN2.DAL
 {
@@ -21,7 +22,7 @@ namespace KillerAppFUN2.DAL
             List<Player> players = repo.getAllPlayers();
             List<string> names = new List<string>();
 
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
                 names.Add(p.Name);
             }
@@ -38,7 +39,7 @@ namespace KillerAppFUN2.DAL
         {
             List<string> takenNames = getPlayerNames();
 
-            foreach(string name in takenNames)
+            foreach (string name in takenNames)
             {
                 if (playerName == name)
                 {
@@ -54,12 +55,9 @@ namespace KillerAppFUN2.DAL
             return repo.getPlayer(playerName);
         }
 
-        public void addPlayer(Player p)
+        public void addPlayer(string Name, Class playerClass)
         {
-            if (p.Name.Length > 4 && p.Name.Length < 31)
-            {
-                repo.addPlayer(p);
-            }
+            repo.addPlayer(Name, playerClass);
         }
 
         public void updatePlayer(Player p)

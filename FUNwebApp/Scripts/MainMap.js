@@ -469,6 +469,7 @@
                         if (damage > defaults.currentRoom.MonsterEnemies[i].Defence) {
                             damage -= defaults.currentRoom.MonsterEnemies[i].Defence;
                             defaults.currentRoom.MonsterEnemies[i].Health -= damage;
+                            defaults = Math.round(defaults);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -493,6 +494,7 @@
                         if (damage > defaults.currentRoom.HumanEnemies[j].Defence) {
                             damage -= defaults.currentRoom.HumanEnemies[j].Defence;
                             defaults.currentRoom.HumanEnemies[j].Health -= damage;
+                            defaults = Math.round(defaults);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -517,6 +519,7 @@
                         if (damage > defaults.currentRoom.BossEnemies[k].Defence) {
                             damage -= defaults.currentRoom.BossEnemies[k].Defence;
                             defaults.currentRoom.BossEnemies[k].Health -= damage;
+                            defaults = Math.round(defaults);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });

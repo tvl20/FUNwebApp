@@ -5,13 +5,19 @@
 
 <h2>Character selection</h2>
 
-<form method="post">
-    <ul style="list-style: none;">
+<div class="table">
+    <form method="post">
         @foreach (Player player in ViewBag.players)
         {
-            <li>
+            <div class="row">
                 <input type="submit" name="selected_character" value="@player.Name" class="col-lg-4 col-lg-offset-4" />
-            </li>
+            </div>
         }
-    </ul>
-</form>
+        <br />
+    </form>
+    <div class="row">
+        <form method="get" action="/MainMenu/EditCharacters" >
+            <input type="submit" name="edit_characters" value="Create/Delete a character" class="col-lg-4 col-lg-offset-4" />
+        </form>
+    </div>
+</div>

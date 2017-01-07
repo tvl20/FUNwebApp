@@ -1,0 +1,62 @@
+﻿@using KillerFUNwebApp1._0.Models
+
+@{
+    ViewBag.Title = "EditCharacters";
+}
+
+<div class="row">
+    <div class="col-lg-4 col-lg-offset-1">
+        <form method="post" action="/MainMenu/DeleteCharacter">
+            <ul style="list-style-type: none;">
+                <!--Style staat hier omdat het anders de standaard bootstrap css gebruikt over de Site.css file-->
+                <li>
+                    <h3>Delete character</h3>
+                </li>
+                @foreach (Player player in ViewBag.players)
+                {
+                    <li>
+                        <input type="radio" name="to_delete_character" value="@player.Name" />
+                        <label>@player.Name</label>
+                    </li>
+                }
+                <li>
+                    <input type="submit" value="Delete character" />
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div class="col-lg-4 col-lg-offset-1">
+        <form method="post" action="/MainMenu/AddCharacter">
+            <ul style="list-style-type: none;">
+                <!--Style staat hier omdat het anders de standaard bootstrap css gebruikt over de Site.css file-->
+                <li>
+                    <h3>Create character</h3>
+                </li>
+                <li>
+                    <input type="radio" name="character_class" value="Knight" />
+                    <label>Knight</label>
+                </li>
+                <li>
+                    <input type="radio" name="character_class" value="Barbarian" />
+                    <label>Barbarian</label>
+                </li>
+                <li>
+                    <input type="radio" name="character_class" value="Paladin" />
+                    <label>Paladin</label>
+                </li>
+                <li>
+                    <input type="radio" name="character_class" value="Crusader" />
+                    <label>Crusader</label>
+                </li>
+                <li>
+                    <input type="text" name="character_name" />
+                    <label>Character name</label>
+                </li>
+                <li>
+                    <input type="submit" value="Create new character" />
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+

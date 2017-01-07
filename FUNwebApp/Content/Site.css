@@ -16,6 +16,6 @@ textarea {
     max-width: 280px;
 }
 
-hidden {
+.hidden {
     display: none;
 }

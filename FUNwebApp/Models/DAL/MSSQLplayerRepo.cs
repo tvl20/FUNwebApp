@@ -15,7 +15,7 @@ namespace KillerAppFUN2.DAL
     {
         private readonly string conn = @"Data Source=DESKTOP-9K8HK1F;Initial Catalog=FUNwebKillerApp;Integrated Security=True";
 
-        public void addPlayer(Player p)
+        public void addPlayer(string Name, Class playerClass)
         {
             using (SqlConnection connection = new SqlConnection(conn))
             {
@@ -24,8 +24,8 @@ namespace KillerAppFUN2.DAL
                 {
                     cmd.Connection = connection;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("@playerName", SqlDbType.VarChar).Value = p.Name;
-                    cmd.Parameters.Add("@Class", SqlDbType.VarChar).Value = p.Class;
+                    cmd.Parameters.Add("@NewPlayerName", SqlDbType.VarChar).Value = Name;
+                    cmd.Parameters.Add("@Class", SqlDbType.VarChar).Value = playerClass;
                     cmd.ExecuteNonQuery();
                 }
             }
