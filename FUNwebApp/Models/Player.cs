@@ -20,11 +20,11 @@ namespace KillerFUNwebApp1._0.Models
         private PlayerBizLog playerRepoBizLog = new PlayerBizLog(new MSSQLplayerRepo());
         private WeaponBizLog weaponRepoBizLog = new WeaponBizLog(new MSSQLweaponRepo());
 
-        public void levelUp(Stat _Stat)
+        public void levelUp(Stat Stat)
         {
             XP -= Level * (Level + 5); //the required amount of XP for the next level is calculated as follows (with lvl being the current level of the player): lvl * (lvl + 5)
             Level++;
-            switch (_Stat)
+            switch (Stat)
             {
                 case Stat.MaxHealth:
                     MaxHealth = MaxHealth + 5;
