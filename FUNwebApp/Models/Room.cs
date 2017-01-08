@@ -15,9 +15,7 @@ namespace KillerFUNwebApp1._0.Models
         public List<HumanEnemy> HumanEnemies { get; set; }
         public List<MonsterEnemy> MonsterEnemies { get; set; }
         public List<BossEnemy> BossEnemies { get; set; }
-        //public List<Enemy> Enemies { get; set; }
         public List<Trap> Traps = new List<Trap>();
         public List<WeaponOnGround> WeaponOnGrounds = new List<WeaponOnGround>();
-        //public List<Thing> Things { get; set; }
     }
 }

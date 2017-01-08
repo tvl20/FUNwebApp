@@ -15,10 +15,8 @@ namespace FUNwebApp.Models.DAL
         List<MonsterEnemy> GetMonsterEnemies(int roomID);
         List<HumanEnemy> GetHumanEnemies(int roomID);
         List<BossEnemy> GetBossEnemies(int roomID);
-        //List<Enemy> GetEnemies(int roomID);
         List<Trap> GetTraps(int roomID);
         List<WeaponOnGround> GetWeaponOnGrounds(int roomID);
-        //List<Thing> GetObjects(int roomID);
         int getPreviousRoomID(int roomID);
         Room GetRoom(int roomID);
     }

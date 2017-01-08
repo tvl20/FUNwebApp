@@ -35,11 +35,6 @@ namespace FUNwebApp.Models.DAL
             return repo.GetBossEnemies(roomID);
         }
 
-        //public List<Enemy> GetEnemies(int roomID)
-        //{
-        //    return repo.GetEnemies(roomID);
-        //}
-
         public List<Trap> GetTraps(int roomID)
         {
             return repo.GetTraps(roomID);
@@ -49,11 +44,6 @@ namespace FUNwebApp.Models.DAL
         {
             return repo.GetWeaponOnGrounds(roomID);
         }
-
-        //public List<Thing> GetObjects(int roomID)
-        //{
-        //    return repo.GetObjects(roomID);
-        //}
 
         public Room GetRoom(int roomID)
         {

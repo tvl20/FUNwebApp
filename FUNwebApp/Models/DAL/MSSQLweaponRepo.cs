@@ -84,12 +84,6 @@ namespace KillerAppFUN2.DAL
                         }
                     }
                 }
-
-
-                //string query = ";";
-                //SqlCommand cmd = new SqlCommand(query, connection);
-
-                
             }
             return weapon;
         }
@@ -127,12 +121,6 @@ namespace KillerAppFUN2.DAL
                         }
                     }
                 }
-
-
-                //string query = ";";
-                //SqlCommand cmd = new SqlCommand(query, connection);
-
-
             }
             return weapon;
         }

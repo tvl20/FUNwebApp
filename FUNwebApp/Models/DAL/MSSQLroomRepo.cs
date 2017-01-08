@@ -267,11 +267,9 @@ namespace FUNwebApp.Models.DAL
         public Room GetRoom(int roomID)
         {
             Room returnRoom = new Room();
-            //returnRoom.Enemies = this.GetEnemies(roomID);
             returnRoom.HumanEnemies = this.GetHumanEnemies(roomID);
             returnRoom.BossEnemies = this.GetBossEnemies(roomID);
             returnRoom.MonsterEnemies = this.GetMonsterEnemies(roomID);
-            //returnRoom.Things = this.GetObjects(roomID);
             returnRoom.Traps = this.GetTraps(roomID);
             returnRoom.WeaponOnGrounds = this.GetWeaponOnGrounds(roomID);
             returnRoom.RoomID = roomID;

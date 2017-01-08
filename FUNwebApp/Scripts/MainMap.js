@@ -47,7 +47,6 @@
         //gets the current room
         $.get("/Map/GetRoom", function (data) {
             defaults.currentRoom = $.extend(true, defaults.currentRoom, data);
-            //defaults.currentRoom = data;
             if (data.HumanEnemies.length === 0){defaults.currentRoom.HumanEnemies = [];}
             if (data.MonsterEnemies.length === 0) { defaults.currentRoom.MonsterEnemies = []; }
             if (data.BossEnemies.length === 0) { defaults.currentRoom.BossEnemies = []; }
@@ -88,7 +87,6 @@
         //gets the current player
         $.get("/Map/GetPlayer", function (data) {
             defaults.player = $.extend(true, defaults.player, data);
-            //defaults.player = data;
             defaults.player.X = defaults.currentRoom.PlayerSpawnX * defaults.tileSize;
             defaults.player.Y = defaults.currentRoom.PlayerSpawnY * defaults.tileSize;
             $('#playername').val(defaults.player.Name);
@@ -102,12 +100,6 @@
         tileA.width = defaults.tileSize;
         tileA.height = defaults.tileSize;
         tileA.onload = render;
-
-        var tileB = new Image();
-        tileB.src = "/Graphics/Tile.png";
-        tileB.width = defaults.tileSize;
-        tileB.height = defaults.tileSize;
-        tileB.onload = render;
 
         function drawTileA() {
             for (var x = 0; x < Math.round(defaults.roomWidth / defaults.tileSize); x++) {
