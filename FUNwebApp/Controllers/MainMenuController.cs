@@ -47,27 +47,30 @@ namespace FUNwebApp.Controllers
             repo.deletePlayer(to_delete_character);
             return Redirect("/");
         }
-        
+
         public ActionResult AddCharacter(string character_name, string character_class)
         {
             if (!string.IsNullOrWhiteSpace(character_name) && !string.IsNullOrWhiteSpace(character_class))
             {
-                switch (character_class)
+                if (!repo.playerNameTaken(character_name))
                 {
-                    case "Knight":
-                        repo.addPlayer(character_name, Class.Knight);
-                        break;
-                    case "Barbarian":
-                        repo.addPlayer(character_name, Class.Barbarian);
-                        break;
-                    case "Crusader":
-                        repo.addPlayer(character_name, Class.Crusader);
-                        break;
-                    case "Paladin":
-                        repo.addPlayer(character_name, Class.Paladin);
-                        break;
+                    switch (character_class)
+                    {
+                        case "Knight":
+                            repo.addPlayer(character_name, Class.Knight);
+                            break;
+                        case "Barbarian":
+                            repo.addPlayer(character_name, Class.Barbarian);
+                            break;
+                        case "Crusader":
+                            repo.addPlayer(character_name, Class.Crusader);
+                            break;
+                        case "Paladin":
+                            repo.addPlayer(character_name, Class.Paladin);
+                            break;
+                    }
+                    return Redirect("/");
                 }
-                return Redirect("/");
             }
             return Redirect("/MainMenu/EditCharacters");
         }

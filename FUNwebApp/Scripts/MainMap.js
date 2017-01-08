@@ -46,8 +46,6 @@
 
         //gets the current room
         $.get("/Map/GetRoom", function (data) {
-            console.log("Data");
-            console.log(data);
             defaults.currentRoom = $.extend(true, defaults.currentRoom, data);
             //defaults.currentRoom = data;
             if (data.HumanEnemies.length === 0){defaults.currentRoom.HumanEnemies = [];}
@@ -85,13 +83,10 @@
                 $.extend(true, defaults.currentLocation, data);
             });
             render();
-            console.log("Def");
-            console.log(defaults);
         });
 
         //gets the current player
         $.get("/Map/GetPlayer", function (data) {
-            //console.log(data);
             defaults.player = $.extend(true, defaults.player, data);
             //defaults.player = data;
             defaults.player.X = defaults.currentRoom.PlayerSpawnX * defaults.tileSize;
@@ -101,7 +96,6 @@
             $('#max_hp').val(defaults.player.MaxHealth);
             render();
         });
-        //console.log(defaults);
 
         var tileA = new Image();
         tileA.src = "/Graphics/Tile.png";
@@ -232,21 +226,18 @@
                 if (defaults.currentRoom.HumanEnemies[i].MovePoints <
                     defaults.currentRoom.HumanEnemies[i].MovePointsPerMove) {
                     defaults.currentRoom.HumanEnemies[i].MovePoints++;
-                    console.log("enemy " + i + " move points:" + defaults.currentRoom.HumanEnemies[i].MovePoints);
                 }
             }
             for (var j = 0; j < defaults.currentRoom.MonsterEnemies.length; j++) {
                 if (defaults.currentRoom.MonsterEnemies[j].MovePoints <
                     defaults.currentRoom.MonsterEnemies[j].MovePointsPerMove) {
                     defaults.currentRoom.MonsterEnemies[j].MovePoints++;
-                    console.log("enemy " + j + " move points:" + defaults.currentRoom.MonsterEnemies[j].MovePoints);
                 }
             }
             for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
                 if (defaults.currentRoom.BossEnemies[k].MovePoints <
                     defaults.currentRoom.BossEnemies[k].MovePointsPerMove) {
                     defaults.currentRoom.BossEnemies[k].MovePoints++;
-                    console.log("enemy " + k + " move points:" + defaults.currentRoom.BossEnemies[k].MovePoints);
                 }
             }
         }
@@ -260,21 +251,18 @@
                 if (defaults.currentRoom.HumanEnemies[i].AttackPoints <
                     defaults.currentRoom.HumanEnemies[i].AttackPointsPerAttack) {
                     defaults.currentRoom.HumanEnemies[i].AttackPoints += defaults.currentRoom.HumanEnemies[i].AttackPointsRegen;
-                    console.log("enemy " + i + " attack points:" + defaults.currentRoom.HumanEnemies[i].MovePoints);
                 }
             }
             for (var j = 0; j < defaults.currentRoom.MonsterEnemies.length; j++) {
                 if (defaults.currentRoom.MonsterEnemies[j].AttackPoints <
                     defaults.currentRoom.MonsterEnemies[j].AttackPointsPerAttack) {
                     defaults.currentRoom.MonsterEnemies[j].AttackPoints += defaults.currentRoom.MonsterEnemies[j].AttackPointsRegen;
-                    console.log("enemy " + j + " attack points:" + defaults.currentRoom.MonsterEnemies[j].MovePoints);
                 }
             }
             for (var k = 0; k < defaults.currentRoom.BossEnemies.length; k++) {
                 if (defaults.currentRoom.BossEnemies[k].AttackPoints <
                     defaults.currentRoom.BossEnemies[k].AttackPointsPerAttack) {
                     defaults.currentRoom.BossEnemies[k].AttackPoints += defaults.currentRoom.BossEnemies[k].AttackPointsRegen;
-                    console.log("enemy " + k + " attack points:" + defaults.currentRoom.BossEnemies[k].MovePoints);
                 }
             }
         }
@@ -308,7 +296,6 @@
                         ((pX === eX) && (pY === (eY + defaults.tileSize))) || //player is under the enemy
                         ((pX === (eX - defaults.tileSize)) && (pY === eY)) //player is left of the enemy
                 ) {
-                    console.log(defaults.currentRoom.MonsterEnemies[i]);
                     if (defaults.currentRoom.MonsterEnemies[i].AttackPoints >= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack) {
                         defaults.currentRoom.MonsterEnemies[i].AttackPoints -= defaults.currentRoom.MonsterEnemies[i].AttackPointsPerAttack;
                         defaults.player.Health -= defaults.currentRoom.MonsterEnemies[i].TrueDamage;
@@ -586,6 +573,7 @@
 
         //Speler controls
         $(window).keyup(function (e) {
+            console.log(defaults);
             if (defaults.player.MovePoints >= defaults.player.MovePointsPerMove) {
                 var pos;
                 var occ;
