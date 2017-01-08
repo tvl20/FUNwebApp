@@ -337,7 +337,7 @@
                         var rnd = Math.floor((Math.random() * 101));
                         var dmg = defaults.currentRoom.HumanEnemies[j].Attack;
                         if (rnd >= defaults.currentRoom.HumanEnemies[j].CritChance) {
-                            dmg = Math.round(dmg * 1.30);
+                            dmg = Math.round(dmg * 2);
                         }
                         if (defaults.player.Defence < dmg) {
                             defaults.player.Health -= (dmg - defaults.player.Defence);
@@ -450,13 +450,13 @@
                         rnd = Math.floor((Math.random() * 101));
                         damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
                         if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
-                            damage = damage * 1.30;
+                            damage = damage * 2;
                         }
 
                         if (damage > defaults.currentRoom.MonsterEnemies[i].Defence) {
                             damage -= defaults.currentRoom.MonsterEnemies[i].Defence;
                             defaults.currentRoom.MonsterEnemies[i].Health -= damage;
-                            defaults = Math.round(defaults);
+                            damage = Math.round(damage);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -475,13 +475,13 @@
                         rnd = Math.floor((Math.random() * 101));
                         damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
                         if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
-                            damage = damage * 1.30;
+                            damage = damage * 2;
                         }
 
                         if (damage > defaults.currentRoom.HumanEnemies[j].Defence) {
                             damage -= defaults.currentRoom.HumanEnemies[j].Defence;
                             defaults.currentRoom.HumanEnemies[j].Health -= damage;
-                            defaults = Math.round(defaults);
+                            damage = Math.round(damage);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
@@ -500,13 +500,13 @@
                         rnd = Math.floor((Math.random() * 101));
                         damage = defaults.player.Attack + defaults.player.CurrentWeapon.WeaponDamage;
                         if (rnd < defaults.player.CurrentWeapon.WeaponCrit) {
-                            damage = damage * 1.30;
+                            damage = damage * 2;
                         }
 
                         if (damage > defaults.currentRoom.BossEnemies[k].Defence) {
                             damage -= defaults.currentRoom.BossEnemies[k].Defence;
                             defaults.currentRoom.BossEnemies[k].Health -= damage;
-                            defaults = Math.round(defaults);
+                            damage = Math.round(damage);
 
                             //give the player XP for the damage inflicted
                             $.post('/Map/AddPlayerXP', { xp: damage });
