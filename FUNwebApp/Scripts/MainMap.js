@@ -177,7 +177,7 @@
         }
 
         function render() { //draw the room on the canvas element
-            if (tileA.complete && tileB.complete) {
+            if (tileA.complete) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawTileA();
                 if (defaults.currentRoom.MonsterEnemies.length === 0 &&
